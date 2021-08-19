@@ -1,14 +1,3 @@
-# Project philosophies
-1. **Never make the code proprietary**
-	1. *MIT license*
-	2. *Not only allow changes, but actively encourage and teach others how to make changes/implement their own version*
-2. **Write code as though someone else will pick up from where you left off**
-	1. *Ample documentation*
-	2. *Code samples*
-3. **Light-touch**
-	1. *Re-use as many assets as possible*
-	2. *Don't add new enchantments*
-
 ## Notes
 
 ### EnchantingTable (Vanilla)
