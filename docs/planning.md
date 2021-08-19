@@ -1,14 +1,4 @@
-# enchantments-seer
-This mod will be something of a spiritual successor to the [Enchanting Plus](https://www.curseforge.com/minecraft/mc-mods/enchanting-plus) mod. **We will not use any code or concepts from their mod - it's protected under the GNU license, which expressly-forbids modifications.**
-
-## Getting started
-1. Clone `https://github.com/MinecraftForge/MinecraftForge` locally
-2. Checkout the branch for the game version that you intend to develop a mod for (in our case, we're using branch `1.16.x`, but intend to support later versions as well)
-3. Make sure you have the correct JDK (and that your Java setup is correct)
-4. Open the project (I use IntelliJ) > Run the Gradle `setup` task
-5. You're now ready to browse the MinecraftForge codebase (including the deobfuscated Minecraft code)
-
-## Project philosophies
+# Project philosophies
 1. **Never make the code proprietary**
 	1. *MIT license*
 	2. *Not only allow changes, but actively encourage and teach others how to make changes/implement their own version*
@@ -18,31 +8,6 @@ This mod will be something of a spiritual successor to the [Enchanting Plus](htt
 3. **Light-touch**
 	1. *Re-use as many assets as possible*
 	2. *Don't add new enchantments*
-
-## Features
-1. **Upgraded enchantment table**
-	1. Same base model as normal one
-	2. Accepts either a seeing stone, or enchanted book as an ingredient
-		1. Seer's Manuscript - allows the user to see ALL enchantments and can consume the Manuscript to apply ONE enchantment to the item, with no limit for the effect value (the levels used to create the Manuscript are therefore consumed during enchantment)
-		2. Enchanted book - allows the user to consume the book to apply the max-value for the enchantment the book gives at no enchantment cost
-			* No other enchantments are visible when using an enchant-specific book
-
-## Items
-1. **Upgraded enchantment table**
-	1. Differs from normal enchanting table in that it has no book unless one has been placed in it's inventory
-		1. Inventory should be global (so all players can access it)
-		2. The book on top will look either like a normal book, or the Seer's Manuscript
-2. **Seer's Manuscript**
-	1. A high-level item crafted by combining a Seer's stone and an enchanted book (of any kind) AND some amount of levels or experience
-		1. Effectively, this means that enchantment costs for this mod only increase linearly
-		2. This mod shifts the "difficulty" from obtaining levels to crafting the reagents
-3. **Seer's Stone**
-	1. A high-level item used as an ingredient for the Seer's Text
-	2. Crafted by:
-
-| Blaze Powder | Blaze Powder | Blaze Powder |
-| Ender Pearl	| Diamond		  | Ender Pearl	|
-| Blaze Powder | Blaze Powder | Blaze Powder |
 
 ## Notes
 
