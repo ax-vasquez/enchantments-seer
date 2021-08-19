@@ -1,4 +1,4 @@
-# Friendlier Enchants
+# enchantments-seer
 This mod will be something of a spiritual successor to the [Enchanting Plus](https://www.curseforge.com/minecraft/mc-mods/enchanting-plus) mod. **We will not use any code or concepts from their mod - it's protected under the GNU license, which expressly-forbids modifications.**
 
 ## Getting started
