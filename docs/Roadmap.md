@@ -4,7 +4,6 @@
 1. [ ] Seer's Enchantment table
    1. [ ] GUI
       1. [ ] Book reagent slot
-         1. [ ] 
       2. [ ] Item reagent slot
       3. [ ] Item output slot
       4. [ ] Enchantments list
