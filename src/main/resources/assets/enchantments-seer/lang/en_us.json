@@ -1,4 +1,6 @@
 {
   "item.enchantments-seer.seers_stone": "Seer's Stone",
-  "item.enchantments-seer.seers_manuscript": "Seer's Manuscript"
+  "item.enchantments-seer.seers_manuscript": "Seer's Manuscript",
+  "block.enchantments-seer.seers_enchanting_table": "Seer's Enchanting Table",
+  "container.seers_enchant": "Enchant Item"
 }
