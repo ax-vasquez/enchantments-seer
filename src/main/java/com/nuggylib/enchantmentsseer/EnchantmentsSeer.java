@@ -17,6 +17,7 @@
  */
 package com.nuggylib.enchantmentsseer;
 
+import com.nuggylib.enchantmentsseer.item.SeersManuscriptItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.fml.RegistryObject;
@@ -42,6 +43,7 @@ public class EnchantmentsSeer
 
     // Items
     public static final RegistryObject<Item> SEERS_STONE = ITEMS.register("seers_stone", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
+    public static final RegistryObject<Item> SEERS_MANUSCRIPT = ITEMS.register("seers_manuscript", () -> new SeersManuscriptItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
 
     public EnchantmentsSeer() {
         try {
