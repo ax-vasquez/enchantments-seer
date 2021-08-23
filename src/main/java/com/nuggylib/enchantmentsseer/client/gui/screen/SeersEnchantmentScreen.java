@@ -28,8 +28,8 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTableContainer> {
-    private static final ResourceLocation ENCHANTING_TABLE_LOCATION = new ResourceLocation("textures/gui/container/enchanting_table.png");
-    private static final ResourceLocation ENCHANTING_BOOK_LOCATION = new ResourceLocation("textures/entity/enchanting_table_book.png");
+    private static final ResourceLocation ENCHANTING_TABLE_LOCATION = new ResourceLocation("enchantments-seer:textures/gui/container/seers_enchanting_table.png");
+    private static final ResourceLocation ENCHANTING_BOOK_LOCATION = new ResourceLocation("enchantments-seer:textures/entity/enchanting_table_book.png");
     private static final BookModel BOOK_MODEL = new BookModel();
     private final Random random = new Random();
     public int time;
@@ -41,8 +41,13 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
     public float oOpen;
     private ItemStack last = ItemStack.EMPTY;
 
-    public SeersEnchantmentScreen(SeersEnchantingTableContainer p_i51090_1_, PlayerInventory p_i51090_2_, ITextComponent p_i51090_3_) {
-        super(p_i51090_1_, p_i51090_2_, p_i51090_3_);
+    /**
+     * @param container                 Is used internally by ContainerScreen as the `menu` field
+     * @param playerInventory
+     * @param textComponent
+     */
+    public SeersEnchantmentScreen(SeersEnchantingTableContainer container, PlayerInventory playerInventory, ITextComponent textComponent) {
+        super(container, playerInventory, textComponent);
     }
 
     public void tick() {
@@ -66,13 +71,13 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
         return super.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_);
     }
 
-    protected void renderBg(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(MatrixStack matrixStack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
         RenderHelper.setupForFlatItems();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bind(ENCHANTING_TABLE_LOCATION);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(p_230450_1_, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
         RenderSystem.matrixMode(5889);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
@@ -81,20 +86,20 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
         RenderSystem.translatef(-0.34F, 0.23F, 0.0F);
         RenderSystem.multMatrix(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
         RenderSystem.matrixMode(5888);
-        p_230450_1_.pushPose();
-        MatrixStack.Entry matrixstack$entry = p_230450_1_.last();
+        matrixStack.pushPose();
+        MatrixStack.Entry matrixstack$entry = matrixStack.last();
         matrixstack$entry.pose().setIdentity();
         matrixstack$entry.normal().setIdentity();
-        p_230450_1_.translate(0.0D, (double)3.3F, 1984.0D);
+        matrixStack.translate(0.0D, (double)3.3F, 1984.0D);
         float f = 5.0F;
-        p_230450_1_.scale(5.0F, 5.0F, 5.0F);
-        p_230450_1_.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
-        p_230450_1_.mulPose(Vector3f.XP.rotationDegrees(20.0F));
+        matrixStack.scale(5.0F, 5.0F, 5.0F);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(20.0F));
         float f1 = MathHelper.lerp(p_230450_2_, this.oOpen, this.open);
-        p_230450_1_.translate((double)((1.0F - f1) * 0.2F), (double)((1.0F - f1) * 0.1F), (double)((1.0F - f1) * 0.25F));
+        matrixStack.translate((double)((1.0F - f1) * 0.2F), (double)((1.0F - f1) * 0.1F), (double)((1.0F - f1) * 0.25F));
         float f2 = -(1.0F - f1) * 90.0F - 90.0F;
-        p_230450_1_.mulPose(Vector3f.YP.rotationDegrees(f2));
-        p_230450_1_.mulPose(Vector3f.XP.rotationDegrees(180.0F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(f2));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
         float f3 = MathHelper.lerp(p_230450_2_, this.oFlip, this.flip) + 0.25F;
         float f4 = MathHelper.lerp(p_230450_2_, this.oFlip, this.flip) + 0.75F;
         f3 = (f3 - (float)MathHelper.fastFloor((double)f3)) * 1.6F - 0.3F;
@@ -119,9 +124,9 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
         BOOK_MODEL.setupAnim(0.0F, f3, f4, f1);
         IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
         IVertexBuilder ivertexbuilder = irendertypebuffer$impl.getBuffer(BOOK_MODEL.renderType(ENCHANTING_BOOK_LOCATION));
-        BOOK_MODEL.renderToBuffer(p_230450_1_, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        BOOK_MODEL.renderToBuffer(matrixStack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         irendertypebuffer$impl.endBatch();
-        p_230450_1_.popPose();
+        matrixStack.popPose();
         RenderSystem.matrixMode(5889);
         RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
         RenderSystem.popMatrix();
@@ -139,33 +144,33 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
             int l1 = (this.menu).costs[i1];
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             if (l1 == 0) {
-                this.blit(p_230450_1_, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
+                this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
             } else {
                 String s = "" + l1;
                 int i2 = 86 - this.font.width(s);
                 ITextProperties itextproperties = EnchantmentNameParts.getInstance().getRandomName(this.font, i2);
                 int j2 = 6839882;
                 if ((l < i1 + 1 || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.abilities.instabuild) {
-                    this.blit(p_230450_1_, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
-                    this.blit(p_230450_1_, j1 + 1, j + 15 + 19 * i1, 16 * i1, 239, 16, 16);
+                    this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
+                    this.blit(matrixStack, j1 + 1, j + 15 + 19 * i1, 16 * i1, 239, 16, 16);
                     this.font.drawWordWrap(itextproperties, k1, j + 16 + 19 * i1, i2, (j2 & 16711422) >> 1);
                     j2 = 4226832;
                 } else {
                     int k2 = p_230450_3_ - (i + 60);
                     int l2 = p_230450_4_ - (j + 14 + 19 * i1);
                     if (k2 >= 0 && l2 >= 0 && k2 < 108 && l2 < 19) {
-                        this.blit(p_230450_1_, j1, j + 14 + 19 * i1, 0, 204, 108, 19);
+                        this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 204, 108, 19);
                         j2 = 16777088;
                     } else {
-                        this.blit(p_230450_1_, j1, j + 14 + 19 * i1, 0, 166, 108, 19);
+                        this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 166, 108, 19);
                     }
 
-                    this.blit(p_230450_1_, j1 + 1, j + 15 + 19 * i1, 16 * i1, 223, 16, 16);
+                    this.blit(matrixStack, j1 + 1, j + 15 + 19 * i1, 16 * i1, 223, 16, 16);
                     this.font.drawWordWrap(itextproperties, k1, j + 16 + 19 * i1, i2, j2);
                     j2 = 8453920;
                 }
 
-                this.font.drawShadow(p_230450_1_, s, (float)(k1 + 86 - this.font.width(s)), (float)(j + 16 + 19 * i1 + 7), j2);
+                this.font.drawShadow(matrixStack, s, (float)(k1 + 86 - this.font.width(s)), (float)(j + 16 + 19 * i1 + 7), j2);
             }
         }
 

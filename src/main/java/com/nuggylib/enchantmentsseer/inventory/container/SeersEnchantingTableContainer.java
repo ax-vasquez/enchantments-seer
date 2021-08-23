@@ -211,10 +211,10 @@ public class SeersEnchantingTableContainer extends Container {
         }
     }
 
-    private List<EnchantmentData> getEnchantmentList(ItemStack p_178148_1_, int p_178148_2_, int p_178148_3_) {
+    private List<EnchantmentData> getEnchantmentList(ItemStack itemStack, int p_178148_2_, int p_178148_3_) {
         this.random.setSeed((long)(this.enchantmentSeed.get() + p_178148_2_));
-        List<EnchantmentData> list = EnchantmentHelper.selectEnchantment(this.random, p_178148_1_, p_178148_3_, false);
-        if (p_178148_1_.getItem() == Items.BOOK && list.size() > 1) {
+        List<EnchantmentData> list = EnchantmentHelper.selectEnchantment(this.random, itemStack, p_178148_3_, false);
+        if (itemStack.getItem() == Items.BOOK && list.size() > 1) {
             list.remove(this.random.nextInt(list.size()));
         }
 
