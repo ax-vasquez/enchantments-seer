@@ -19,6 +19,7 @@ package com.nuggylib.enchantmentsseer;
 
 import com.nuggylib.enchantmentsseer.client.gui.screen.SeersEnchantmentScreen;
 import com.nuggylib.enchantmentsseer.client.renderer.tileentity.SeersEnchantmentTableTileEntityRenderer;
+import com.nuggylib.enchantmentsseer.item.SeersEnchantedPageItem;
 import com.nuggylib.enchantmentsseer.item.SeersManuscriptItem;
 import com.nuggylib.enchantmentsseer.block.SeersEnchantingTableBlock;
 import com.nuggylib.enchantmentsseer.inventory.container.SeersEnchantingTableContainer;
@@ -66,6 +67,7 @@ public class EnchantmentsSeer
     // Items
     public static final RegistryObject<Item> SEERS_STONE = ITEMS.register("seers_stone", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
     public static final RegistryObject<Item> SEERS_MANUSCRIPT = ITEMS.register("seers_manuscript", () -> new SeersManuscriptItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
+    public static final RegistryObject<Item> SEERS_ENCHANTED_PAGE = ITEMS.register("seers_enchanted_page", () -> new SeersEnchantedPageItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
     public static final RegistryObject<BlockItem> SEERS_ENCHANTING_TABLE_BLOCK_ITEM = ITEMS.register("seers_enchanting_table", () -> new BlockItem(SEERS_ENCHANTING_TABLE_BLOCK.get(), new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
 
     // TileEntityTypes
