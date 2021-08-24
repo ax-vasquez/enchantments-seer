@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SeersEnchantmentTableTileEntityRenderer extends TileEntityRenderer<SeersEnchantingTableTileEntity> {
-    public static final RenderMaterial BOOK_LOCATION = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, new ResourceLocation("entity/enchanting_table_book"));
+    public static final RenderMaterial BOOK_LOCATION = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, new ResourceLocation("enchantments-seer:textures/entity/enchanting_table_book"));
     private final BookModel bookModel = new BookModel();
 
     public SeersEnchantmentTableTileEntityRenderer(TileEntityRendererDispatcher renderDispatcherIn) {
