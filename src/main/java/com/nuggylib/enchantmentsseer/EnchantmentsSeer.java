@@ -18,7 +18,7 @@
 package com.nuggylib.enchantmentsseer;
 
 import com.nuggylib.enchantmentsseer.client.gui.screen.SeersEnchantmentScreen;
-import com.nuggylib.enchantmentsseer.client.renderer.tileentity.SeersEnchantmentTableTileEntityRenderer;
+import com.nuggylib.enchantmentsseer.client.render.tileentity.SeersEnchantmentTableTileEntityRenderer;
 import com.nuggylib.enchantmentsseer.item.SeersManuscriptItem;
 import com.nuggylib.enchantmentsseer.block.SeersEnchantingTableBlock;
 import com.nuggylib.enchantmentsseer.inventory.container.SeersEnchantingTableContainer;
@@ -31,6 +31,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -50,7 +51,7 @@ import org.apache.logging.log4j.Logger;
 public class EnchantmentsSeer
 {
     public static final String MOD_ID = "enchantments-seer";
-    private static final Logger LOGGER = LogManager.getLogger(EnchantmentsSeer.class);
+    public static final Logger MAIN_LOGGER = LogManager.getLogger(EnchantmentsSeer.class);
 
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
@@ -76,35 +77,35 @@ public class EnchantmentsSeer
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
         try {
-            LOGGER.info("Registering items");
+            MAIN_LOGGER.info("Registering items");
             ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-            LOGGER.info("Done registering items");
+            MAIN_LOGGER.info("Done registering items");
         } catch (Error e) {
-            LOGGER.error(String.format("Error occurred while registering items: '%s'", e.getMessage()));
+            MAIN_LOGGER.error(String.format("Error occurred while registering items: '%s'", e.getMessage()));
         }
 
         try {
-            LOGGER.info("Registering blocks");
+            MAIN_LOGGER.info("Registering blocks");
             BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-            LOGGER.info("Done registering blocks");
+            MAIN_LOGGER.info("Done registering blocks");
         } catch (Error e) {
-            LOGGER.error(String.format("Error occurred while registering blocks: '%s'", e.getMessage()));
+            MAIN_LOGGER.error(String.format("Error occurred while registering blocks: '%s'", e.getMessage()));
         }
 
         try {
-            LOGGER.info("Registering tile entity types");
+            MAIN_LOGGER.info("Registering tile entity types");
             TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-            LOGGER.info("Done tile entity types");
+            MAIN_LOGGER.info("Done tile entity types");
         } catch (Error e) {
-            LOGGER.error(String.format("Error occurred while registering tile entity types: '%s'", e.getMessage()));
+            MAIN_LOGGER.error(String.format("Error occurred while registering tile entity types: '%s'", e.getMessage()));
         }
 
         try {
-            LOGGER.info("Registering container types");
+            MAIN_LOGGER.info("Registering container types");
             CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-            LOGGER.info("Done container types");
+            MAIN_LOGGER.info("Done container types");
         } catch (Error e) {
-            LOGGER.error(String.format("Error occurred while registering container types: '%s'", e.getMessage()));
+            MAIN_LOGGER.error(String.format("Error occurred while registering container types: '%s'", e.getMessage()));
         }
 
 
@@ -116,5 +117,17 @@ public class EnchantmentsSeer
         ScreenManager.register(SEERS_ENCHANTING_TABLE_CONTAINER_TYPE.get(), SeersEnchantmentScreen::new);
         // Registers the book animation for the seers enchanting table
         ClientRegistry.bindTileEntityRenderer(SEERS_ENCHANTING_TABLE_TE_TYPE.get(), SeersEnchantmentTableTileEntityRenderer::new);
+    }
+
+    /**
+     * Helper method to get fully-qualified resource location for the given path
+     *
+     * For example, if you'd like the `ResourcePath` for the `seers_enchanting_table`:
+     * ```
+     * ResourceLocation exampleResourceLocation = EnchantmentsSeer.rl("block/seers_enchanting_table")
+     * ```
+     */
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

@@ -26,6 +26,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -52,6 +54,7 @@ public class SeersEnchantingTableContainer extends Container {
     public SeersEnchantingTableContainer(int containerId, PlayerInventory playerInventory, IWorldPosCallable access) {
         super(EnchantmentsSeer.SEERS_ENCHANTING_TABLE_CONTAINER_TYPE.get(), containerId);
         this.access = access;
+        // Create the item slot (e.g., the slot for the item to be enchanted)
         this.addSlot(new Slot(this.enchantSlots, 0, 15, 47) {
             public boolean mayPlace(ItemStack inputItemStack) {
                 return true;
@@ -61,33 +64,38 @@ public class SeersEnchantingTableContainer extends Container {
                 return 1;
             }
         });
+        // Create the reagent slot
         this.addSlot(new Slot(this.enchantSlots, 1, 35, 47) {
+            // TODO: Only allow Seer's Enchanting Book, Enchanted Book, or Seer's Stones as input
             public boolean mayPlace(ItemStack inputItemStack) {
                 return net.minecraftforge.common.Tags.Items.GEMS_LAPIS.contains(inputItemStack.getItem());
             }
         });
 
-        for(int i = 0; i < 3; ++i) {
-            for(int j = 0; j < 9; ++j) {
+        final int INVENTORY_ROWS = 3;
+        final int INVENTORY_COLUMNS = 9;
+        // Create the slots to display the player's internal inventory
+        for(int i = 0; i < INVENTORY_ROWS; ++i) {
+            for(int j = 0; j < INVENTORY_COLUMNS; ++j) {
                 this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
             }
         }
 
-
-        for(int k = 0; k < 9; ++k) {
+        final int HOTBAR_SLOTS = 9;
+        // Create the slots to display the player's hot-bar inventory
+        for(int k = 0; k < HOTBAR_SLOTS; ++k) {
             this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 142));
         }
 
-        this.addDataSlot(IntReferenceHolder.shared(this.costs, 0));
-        this.addDataSlot(IntReferenceHolder.shared(this.costs, 1));
-        this.addDataSlot(IntReferenceHolder.shared(this.costs, 2));
+        // TODO: Update the GUI so that row count is dynamic and feed is scrollable
+        final int ROW_COUNT = 3;
         this.addDataSlot(this.enchantmentSeed).set(playerInventory.player.getEnchantmentSeed());
-        this.addDataSlot(IntReferenceHolder.shared(this.enchantClue, 0));
-        this.addDataSlot(IntReferenceHolder.shared(this.enchantClue, 1));
-        this.addDataSlot(IntReferenceHolder.shared(this.enchantClue, 2));
-        this.addDataSlot(IntReferenceHolder.shared(this.levelClue, 0));
-        this.addDataSlot(IntReferenceHolder.shared(this.levelClue, 1));
-        this.addDataSlot(IntReferenceHolder.shared(this.levelClue, 2));
+        // Adds data slots used as the enchantment list rows
+        for (int i = 0; i < ROW_COUNT; ++i) {
+            this.addDataSlot(IntReferenceHolder.shared(this.costs, i));
+            this.addDataSlot(IntReferenceHolder.shared(this.enchantClue, i));
+            this.addDataSlot(IntReferenceHolder.shared(this.levelClue, i));
+        }
 
     }
 
@@ -95,24 +103,31 @@ public class SeersEnchantingTableContainer extends Container {
         return world.getBlockState(pos).getEnchantPowerBonus(world, pos);
     }
 
-    public void slotsChanged(IInventory p_75130_1_) {
-        if (p_75130_1_ == this.enchantSlots) {
-            ItemStack itemstack = p_75130_1_.getItem(0);
+    /**
+     * What to do when any of the slots change, meaning:
+     * 1. An item to enchant item was added/removed
+     * 2. An item was enchanted (and therefore removed)
+     * 3. A reagent was added/removed
+     * 4. A reagent was consumed
+     */
+    public void slotsChanged(IInventory inventory) {
+        if (inventory == this.enchantSlots) {
+            ItemStack itemstack = inventory.getItem(0);
             if (!itemstack.isEmpty() && itemstack.isEnchantable()) {
-                this.access.execute((p_217002_2_, p_217002_3_) -> {
+                this.access.execute((world, blockPos) -> {
                     int power = 0;
 
                     for(int k = -1; k <= 1; ++k) {
                         for(int l = -1; l <= 1; ++l) {
-                            if ((k != 0 || l != 0) && p_217002_2_.isEmptyBlock(p_217002_3_.offset(l, 0, k)) && p_217002_2_.isEmptyBlock(p_217002_3_.offset(l, 1, k))) {
-                                power += getPower(p_217002_2_, p_217002_3_.offset(l * 2, 0, k * 2));
-                                power += getPower(p_217002_2_, p_217002_3_.offset(l * 2, 1, k * 2));
+                            if ((k != 0 || l != 0) && world.isEmptyBlock(blockPos.offset(l, 0, k)) && world.isEmptyBlock(blockPos.offset(l, 1, k))) {
+                                power += getPower(world, blockPos.offset(l * 2, 0, k * 2));
+                                power += getPower(world, blockPos.offset(l * 2, 1, k * 2));
 
                                 if (l != 0 && k != 0) {
-                                    power += getPower(p_217002_2_, p_217002_3_.offset(l * 2, 0, k));
-                                    power += getPower(p_217002_2_, p_217002_3_.offset(l * 2, 1, k));
-                                    power += getPower(p_217002_2_, p_217002_3_.offset(l, 0, k * 2));
-                                    power += getPower(p_217002_2_, p_217002_3_.offset(l, 1, k * 2));
+                                    power += getPower(world, blockPos.offset(l * 2, 0, k));
+                                    power += getPower(world, blockPos.offset(l * 2, 1, k));
+                                    power += getPower(world, blockPos.offset(l, 0, k * 2));
+                                    power += getPower(world, blockPos.offset(l, 1, k * 2));
                                 }
                             }
                         }
@@ -120,23 +135,23 @@ public class SeersEnchantingTableContainer extends Container {
 
                     this.random.setSeed((long)this.enchantmentSeed.get());
 
-                    for(int i1 = 0; i1 < 3; ++i1) {
-                        this.costs[i1] = EnchantmentHelper.getEnchantmentCost(this.random, i1, (int)power, itemstack);
-                        this.enchantClue[i1] = -1;
-                        this.levelClue[i1] = -1;
-                        if (this.costs[i1] < i1 + 1) {
-                            this.costs[i1] = 0;
+                    for(int index = 0; index < 3; ++index) {
+                        this.costs[index] = EnchantmentHelper.getEnchantmentCost(this.random, index, (int)power, itemstack);
+                        this.enchantClue[index] = -1;
+                        this.levelClue[index] = -1;
+                        if (this.costs[index] < index + 1) {
+                            this.costs[index] = 0;
                         }
-                        this.costs[i1] = net.minecraftforge.event.ForgeEventFactory.onEnchantmentLevelSet(p_217002_2_, p_217002_3_, i1, (int)power, itemstack, costs[i1]);
+                        this.costs[index] = net.minecraftforge.event.ForgeEventFactory.onEnchantmentLevelSet(world, blockPos, index, (int)power, itemstack, costs[index]);
                     }
 
-                    for(int j1 = 0; j1 < 3; ++j1) {
-                        if (this.costs[j1] > 0) {
-                            List<EnchantmentData> list = this.getEnchantmentList(itemstack, j1, this.costs[j1]);
+                    for(int index = 0; index < 3; ++index) {
+                        if (this.costs[index] > 0) {
+                            List<EnchantmentData> list = this.getEnchantmentList(itemstack, this.costs[index]);
                             if (list != null && !list.isEmpty()) {
                                 EnchantmentData enchantmentdata = list.get(this.random.nextInt(list.size()));
-                                this.enchantClue[j1] = Registry.ENCHANTMENT.getId(enchantmentdata.enchantment);
-                                this.levelClue[j1] = enchantmentdata.level;
+                                this.enchantClue[index] = Registry.ENCHANTMENT.getId(enchantmentdata.enchantment);
+                                this.levelClue[index] = enchantmentdata.level;
                             }
                         }
                     }
@@ -154,56 +169,57 @@ public class SeersEnchantingTableContainer extends Container {
 
     }
 
-    public boolean clickMenuButton(PlayerEntity p_75140_1_, int p_75140_2_) {
-        ItemStack itemstack = this.enchantSlots.getItem(0);
-        ItemStack itemstack1 = this.enchantSlots.getItem(1);
-        int i = p_75140_2_ + 1;
-        if ((itemstack1.isEmpty() || itemstack1.getCount() < i) && !p_75140_1_.abilities.instabuild) {
+    public boolean clickMenuButton(PlayerEntity player, int index) {
+        ItemStack enchantItem = this.enchantSlots.getItem(0);
+        ItemStack reagentItem = this.enchantSlots.getItem(1);
+        // TODO: The names here are probably wrong - figure out what the names here should really be
+        int cost = index + 1;
+        if ((reagentItem.isEmpty() || reagentItem.getCount() < cost) && !player.abilities.instabuild) {
             return false;
-        } else if (this.costs[p_75140_2_] <= 0 || itemstack.isEmpty() || (p_75140_1_.experienceLevel < i || p_75140_1_.experienceLevel < this.costs[p_75140_2_]) && !p_75140_1_.abilities.instabuild) {
+        } else if (this.costs[index] <= 0 || enchantItem.isEmpty() || (player.experienceLevel < cost || player.experienceLevel < this.costs[index]) && !player.abilities.instabuild) {
             return false;
         } else {
-            this.access.execute((p_217003_6_, p_217003_7_) -> {
-                ItemStack itemstack2 = itemstack;
-                List<EnchantmentData> list = this.getEnchantmentList(itemstack, p_75140_2_, this.costs[p_75140_2_]);
+            this.access.execute((worldIn, blockPos) -> {
+                ItemStack resultItem = enchantItem;
+                List<EnchantmentData> list = this.getEnchantmentList(enchantItem, this.costs[index]);
                 if (!list.isEmpty()) {
-                    p_75140_1_.onEnchantmentPerformed(itemstack, i);
-                    boolean flag = itemstack.getItem() == Items.BOOK;
-                    if (flag) {
-                        itemstack2 = new ItemStack(Items.ENCHANTED_BOOK);
-                        CompoundNBT compoundnbt = itemstack.getTag();
+                    player.onEnchantmentPerformed(enchantItem, cost);
+                    boolean isBookItem = enchantItem.getItem() == Items.BOOK;
+                    if (isBookItem) {
+                        resultItem = new ItemStack(Items.ENCHANTED_BOOK);
+                        CompoundNBT compoundnbt = enchantItem.getTag();
                         if (compoundnbt != null) {
-                            itemstack2.setTag(compoundnbt.copy());
+                            resultItem.setTag(compoundnbt.copy());
                         }
 
-                        this.enchantSlots.setItem(0, itemstack2);
+                        this.enchantSlots.setItem(0, resultItem);
                     }
 
                     for(int j = 0; j < list.size(); ++j) {
                         EnchantmentData enchantmentdata = list.get(j);
-                        if (flag) {
-                            EnchantedBookItem.addEnchantment(itemstack2, enchantmentdata);
+                        if (isBookItem) {
+                            EnchantedBookItem.addEnchantment(resultItem, enchantmentdata);
                         } else {
-                            itemstack2.enchant(enchantmentdata.enchantment, enchantmentdata.level);
+                            resultItem.enchant(enchantmentdata.enchantment, enchantmentdata.level);
                         }
                     }
 
-                    if (!p_75140_1_.abilities.instabuild) {
-                        itemstack1.shrink(i);
-                        if (itemstack1.isEmpty()) {
+                    if (!player.abilities.instabuild) {
+                        reagentItem.shrink(cost);
+                        if (reagentItem.isEmpty()) {
                             this.enchantSlots.setItem(1, ItemStack.EMPTY);
                         }
                     }
 
-                    p_75140_1_.awardStat(Stats.ENCHANT_ITEM);
-                    if (p_75140_1_ instanceof ServerPlayerEntity) {
-                        CriteriaTriggers.ENCHANTED_ITEM.trigger((ServerPlayerEntity)p_75140_1_, itemstack2, i);
+                    player.awardStat(Stats.ENCHANT_ITEM);
+                    if (player instanceof ServerPlayerEntity) {
+                        CriteriaTriggers.ENCHANTED_ITEM.trigger((ServerPlayerEntity)player, resultItem, cost);
                     }
 
                     this.enchantSlots.setChanged();
-                    this.enchantmentSeed.set(p_75140_1_.getEnchantmentSeed());
+                    this.enchantmentSeed.set(player.getEnchantmentSeed());
                     this.slotsChanged(this.enchantSlots);
-                    p_217003_6_.playSound((PlayerEntity)null, p_217003_7_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, p_217003_6_.random.nextFloat() * 0.1F + 0.9F);
+                    worldIn.playSound((PlayerEntity)null, blockPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
                 }
 
             });
@@ -211,14 +227,34 @@ public class SeersEnchantingTableContainer extends Container {
         }
     }
 
-    private List<EnchantmentData> getEnchantmentList(ItemStack itemStack, int p_178148_2_, int p_178148_3_) {
-        this.random.setSeed((long)(this.enchantmentSeed.get() + p_178148_2_));
-        List<EnchantmentData> list = EnchantmentHelper.selectEnchantment(this.random, itemStack, p_178148_3_, false);
-        if (itemStack.getItem() == Items.BOOK && list.size() > 1) {
-            list.remove(this.random.nextInt(list.size()));
+    /**
+     * Internal method to get the list of enchantments for the given itemStack
+     *
+     * @param itemStack
+     * @param enchantmentCost
+     * @return
+     */
+    private List<EnchantmentData> getEnchantmentList(ItemStack itemStack, int enchantmentCost) {
+        List<EnchantmentData> availableEnchantsForItem = EnchantmentHelper.getAvailableEnchantmentResults(enchantmentCost, itemStack, false);
+        ArrayList<String> categories = new ArrayList<>();
+        for (EnchantmentData data: availableEnchantsForItem) {
+            String enchantmentNameAndLevel = data.enchantment.getFullname(data.level).getString();
+            List<String> parts = new ArrayList<>(Arrays.asList(enchantmentNameAndLevel.split(" ")));
+            parts.remove((parts.size() - 1));
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < parts.size(); ++i) {
+                builder.append(parts.get(i));
+                if (i != (parts.size() - 1)) {
+                    builder.append(" ");
+                }
+            }
+            String enchantmentName = builder.toString();
+            if (!categories.contains(enchantmentName)) {
+                categories.add(enchantmentName);
+            }
         }
-
-        return list;
+        LOGGER.info(String.format("Enchantment categories for item: %s", categories));
+        return availableEnchantsForItem;
     }
 
     @OnlyIn(Dist.CLIENT)

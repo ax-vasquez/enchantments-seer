@@ -75,14 +75,15 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
         RenderHelper.setupForFlatItems();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bind(ENCHANTING_TABLE_LOCATION);
-        int i = (this.width - this.imageWidth) / 2;
-        int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        int widthMargin = (this.width - this.imageWidth) / 2;
+        int heightMargin = (this.height - this.imageHeight) / 2;
+        // Draws the gray background
+        this.blit(matrixStack, widthMargin, heightMargin, 0, 0, this.imageWidth, this.imageHeight);
         RenderSystem.matrixMode(5889);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
-        int k = (int)this.minecraft.getWindow().getGuiScale();
-        RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
+        int guiScale = (int)this.minecraft.getWindow().getGuiScale();
+        RenderSystem.viewport((this.width - 320) / 2 * guiScale, (this.height - 240) / 2 * guiScale, 320 * guiScale, 240 * guiScale);
         RenderSystem.translatef(-0.34F, 0.23F, 0.0F);
         RenderSystem.multMatrix(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
         RenderSystem.matrixMode(5888);
@@ -123,8 +124,8 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
         RenderSystem.enableRescaleNormal();
         BOOK_MODEL.setupAnim(0.0F, f3, f4, f1);
         IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-        IVertexBuilder ivertexbuilder = irendertypebuffer$impl.getBuffer(BOOK_MODEL.renderType(ENCHANTING_BOOK_LOCATION));
-        BOOK_MODEL.renderToBuffer(matrixStack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        IVertexBuilder bookVertexBuilder = irendertypebuffer$impl.getBuffer(BOOK_MODEL.renderType(ENCHANTING_BOOK_LOCATION));
+        BOOK_MODEL.renderToBuffer(matrixStack, bookVertexBuilder, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         irendertypebuffer$impl.endBatch();
         matrixStack.popPose();
         RenderSystem.matrixMode(5889);
@@ -134,43 +135,43 @@ public class SeersEnchantmentScreen extends ContainerScreen<SeersEnchantingTable
         RenderHelper.setupFor3DItems();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         EnchantmentNameParts.getInstance().initSeed((long)this.menu.getEnchantmentSeed());
-        int l = this.menu.getGoldCount();
+        int goldCount = this.menu.getGoldCount();
 
-        for(int i1 = 0; i1 < 3; ++i1) {
-            int j1 = i + 60;
-            int k1 = j1 + 20;
+        for(int index = 0; index < 3; ++index) {
+            int lower = widthMargin + 60;
+            int upper = lower + 20;
             this.setBlitOffset(0);
             this.minecraft.getTextureManager().bind(ENCHANTING_TABLE_LOCATION);
-            int l1 = (this.menu).costs[i1];
+            int cost = (this.menu).costs[index];
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            if (l1 == 0) {
-                this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
+            if (cost == 0) {
+                this.blit(matrixStack, lower, heightMargin + 14 + 19 * index, 0, 185, 108, 19);
             } else {
-                String s = "" + l1;
+                String s = "" + cost;
                 int i2 = 86 - this.font.width(s);
                 ITextProperties itextproperties = EnchantmentNameParts.getInstance().getRandomName(this.font, i2);
                 int j2 = 6839882;
-                if ((l < i1 + 1 || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.abilities.instabuild) {
-                    this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
-                    this.blit(matrixStack, j1 + 1, j + 15 + 19 * i1, 16 * i1, 239, 16, 16);
-                    this.font.drawWordWrap(itextproperties, k1, j + 16 + 19 * i1, i2, (j2 & 16711422) >> 1);
+                if ((goldCount < index + 1 || this.minecraft.player.experienceLevel < cost) && !this.minecraft.player.abilities.instabuild) {
+                    this.blit(matrixStack, lower, heightMargin + 14 + 19 * index, 0, 185, 108, 19);
+                    this.blit(matrixStack, lower + 1, heightMargin + 15 + 19 * index, 16 * index, 239, 16, 16);
+                    this.font.drawWordWrap(itextproperties, upper, heightMargin + 16 + 19 * index, i2, (j2 & 16711422) >> 1);
                     j2 = 4226832;
                 } else {
-                    int k2 = p_230450_3_ - (i + 60);
-                    int l2 = p_230450_4_ - (j + 14 + 19 * i1);
+                    int k2 = p_230450_3_ - (widthMargin + 60);
+                    int l2 = p_230450_4_ - (heightMargin + 14 + 19 * index);
                     if (k2 >= 0 && l2 >= 0 && k2 < 108 && l2 < 19) {
-                        this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 204, 108, 19);
+                        this.blit(matrixStack, lower, heightMargin + 14 + 19 * index, 0, 204, 108, 19);
                         j2 = 16777088;
                     } else {
-                        this.blit(matrixStack, j1, j + 14 + 19 * i1, 0, 166, 108, 19);
+                        this.blit(matrixStack, lower, heightMargin + 14 + 19 * index, 0, 166, 108, 19);
                     }
 
-                    this.blit(matrixStack, j1 + 1, j + 15 + 19 * i1, 16 * i1, 223, 16, 16);
-                    this.font.drawWordWrap(itextproperties, k1, j + 16 + 19 * i1, i2, j2);
+                    this.blit(matrixStack, lower + 1, heightMargin + 15 + 19 * index, 16 * index, 223, 16, 16);
+                    this.font.drawWordWrap(itextproperties, upper, heightMargin + 16 + 19 * index, i2, j2);
                     j2 = 8453920;
                 }
 
-                this.font.drawShadow(matrixStack, s, (float)(k1 + 86 - this.font.width(s)), (float)(j + 16 + 19 * i1 + 7), j2);
+                this.font.drawShadow(matrixStack, s, (float)(upper + 86 - this.font.width(s)), (float)(heightMargin + 16 + 19 * index + 7), j2);
             }
         }
 
