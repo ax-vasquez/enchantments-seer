@@ -10,9 +10,13 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Shamelessly-copied from the Mekanism codebase (because they are awesome and their stuff works <3)
+ *
+ * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/inventory/container/slot/VirtualCraftingOutputSlot.java"
+ */
 public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot {
 
     @Nonnull
@@ -101,13 +105,4 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot {
         return canCraft ? super.getStackToRender() : ItemStack.EMPTY;
     }
 
-    @Nonnull
-    public ItemStack shiftClickSlot(@Nonnull PlayerEntity player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
-        //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
-        craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
-        // afterwards we want to "stop" crafting as our window determines how much a shift click should produce
-        // so even though we may still have an output in the slot, we return empty here so that vanilla's loop
-        // it performs for shift clicking, doesn't cause us to craft as much as we are able to.
-        return ItemStack.EMPTY;
-    }
 }

@@ -2,10 +2,23 @@ package com.nuggylib.enchantmentsseer.common.content.qio;
 
 import com.nuggylib.enchantmentsseer.api.IContentsListener;
 import com.nuggylib.enchantmentsseer.inventory.container.SelectedWindowData;
+import com.nuggylib.enchantmentsseer.inventory.container.slot.CraftingWindowOutputInventorySlot;
 import com.nuggylib.enchantmentsseer.inventory.slot.CraftingWindowInventorySlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.items.ItemHandlerHelper;
+// todo: add this dependency
+//import org.jetbrains.annotations.Contract;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 
 /**
  * Shamelessly-copied from the Mekanism codebase (because they are awesome and their stuff works <3)

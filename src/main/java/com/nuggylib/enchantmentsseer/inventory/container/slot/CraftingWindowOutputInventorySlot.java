@@ -8,6 +8,11 @@ import mcp.MethodsReturnNonnullByDefault;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * Shamelessly-copied from the Mekanism codebase (because they are awesome and their stuff works <3)
+ *
+ * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/inventory/slot/CraftingWindowOutputInventorySlot.java"
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
