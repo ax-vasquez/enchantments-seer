@@ -18,12 +18,13 @@
 package com.nuggylib.enchantmentsseer;
 
 import com.nuggylib.enchantmentsseer.client.gui.screen.SeersEnchantmentScreen;
-import com.nuggylib.enchantmentsseer.client.renderer.tileentity.SeersEnchantmentTableTileEntityRenderer;
 import com.nuggylib.enchantmentsseer.item.SeersEnchantedPageItem;
+import com.nuggylib.enchantmentsseer.client.render.tileentity.SeersEnchantmentTableTileEntityRenderer;
 import com.nuggylib.enchantmentsseer.item.SeersManuscriptItem;
 import com.nuggylib.enchantmentsseer.block.SeersEnchantingTableBlock;
 import com.nuggylib.enchantmentsseer.inventory.container.SeersEnchantingTableContainer;
 import com.nuggylib.enchantmentsseer.tileentity.SeersEnchantingTableTileEntity;
+import com.nuggylib.enchantmentsseer.util.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.ScreenManager;
@@ -32,6 +33,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -51,7 +53,7 @@ import org.apache.logging.log4j.Logger;
 public class EnchantmentsSeer
 {
     public static final String MOD_ID = "enchantments-seer";
-    private static final Logger LOGGER = LogManager.getLogger(EnchantmentsSeer.class);
+    public static final Logger LOGGER = LogManager.getLogger();
 
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
@@ -118,5 +120,21 @@ public class EnchantmentsSeer
         ScreenManager.register(SEERS_ENCHANTING_TABLE_CONTAINER_TYPE.get(), SeersEnchantmentScreen::new);
         // Registers the book animation for the seers enchanting table
         ClientRegistry.bindTileEntityRenderer(SEERS_ENCHANTING_TABLE_TE_TYPE.get(), SeersEnchantmentTableTileEntityRenderer::new);
+    }
+
+    /**
+     * Gets a ResourceLocation with a defined resource type and name.
+     *
+     * @param type - type of resource to retrieve
+     * @param name - simple name of file to retrieve as a ResourceLocation
+     *
+     * @return the corresponding ResourceLocation
+     */
+    public static ResourceLocation getResource(ResourceType type, String name) {
+        return rl(type.getPrefix() + name);
+    }
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }
