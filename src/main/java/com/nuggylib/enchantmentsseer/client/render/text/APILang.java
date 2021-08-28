@@ -1,7 +1,6 @@
 package com.nuggylib.enchantmentsseer.client.render.text;
 
 import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 
 /**
@@ -13,9 +12,6 @@ import net.minecraft.util.Util;
  * @see "https://github.com/mekanism/Mekanism/blob/d307eccba0533a3f7093703e446d8ce85cf03f94/src/api/java/mekanism/api/text/APILang.java"
  */
 public enum APILang implements ILangEntry {
-    //Generic
-    @Deprecated//TODO - 1.17: Remove this generic lang entry in favor of just having string text components be used
-            GENERIC("generic", "format"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),
@@ -23,13 +19,14 @@ public enum APILang implements ILangEntry {
     SOUTH("direction", "south"),
     WEST("direction", "west"),
     EAST("direction", "east"),
-    //Relative Sides
-    FRONT("side", "front"),
-    LEFT("side", "left"),
-    RIGHT("side", "right"),
-    BACK("side", "back"),
-    TOP("side", "top"),
-    BOTTOM("side", "bottom"),
+    //Gui lang strings
+    ENCHANTMENTS_SEER("constants", "mod_name"),
+    DEBUG_TITLE("constants", "debug_title"),
+    LOG_FORMAT("constants", "log_format"),
+    FORGE("constants", "forge"),
+    ERROR("constants", "error"),
+    ALPHA_WARNING("constants", "alpha_warning"),
+    ALPHA_WARNING_HERE("constants", "alpha_warning.here"),
     //Colors
     COLOR_BLACK("color", "black"),
     COLOR_DARK_BLUE("color", "dark_blue"),
@@ -49,14 +46,19 @@ public enum APILang implements ILangEntry {
     COLOR_WHITE("color", "white"),
     COLOR_BROWN("color", "brown"),
     COLOR_BRIGHT_PINK("color", "bright_pink"),
-    // Gui
-    CLOSE("gui", "close"),
+    //Relative Sides
+    FRONT("side", "front"),
+    LEFT("side", "left"),
+    RIGHT("side", "right"),
+    BACK("side", "back"),
+    TOP("side", "top"),
+    BOTTOM("side", "bottom"),
     ;
 
     private final String key;
 
     APILang(String type, String path) {
-        this(Util.makeDescriptionId(type, new ResourceLocation(EnchantmentsSeer.MOD_ID, path)));
+        this(Util.makeDescriptionId(type, EnchantmentsSeer.rl(path)));
     }
 
     APILang(String key) {
@@ -67,4 +69,5 @@ public enum APILang implements ILangEntry {
     public String getTranslationKey() {
         return key;
     }
+
 }

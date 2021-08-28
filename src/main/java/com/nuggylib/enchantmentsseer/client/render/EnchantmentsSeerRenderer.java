@@ -3,6 +3,7 @@ package com.nuggylib.enchantmentsseer.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.client.render.text.EnumColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -14,8 +15,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nonnull;
 
 /**
  * Registers render-related stuff
@@ -103,6 +107,23 @@ public class EnchantmentsSeerRenderer {
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
+    }
+
+    public static int getColorARGB(EnumColor color, float alpha) {
+        return getColorARGB(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2], alpha);
+    }
+
+    public static int getColorARGB(int red, int green, int blue, float alpha) {
+        if (alpha < 0) {
+            alpha = 0;
+        } else if (alpha > 1) {
+            alpha = 1;
+        }
+        int argb = (int) (255 * alpha) << 24;
+        argb |= red << 16;
+        argb |= green << 8;
+        argb |= blue;
+        return argb;
     }
 
 }

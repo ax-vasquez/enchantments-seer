@@ -18,13 +18,14 @@
 package com.nuggylib.enchantmentsseer;
 
 import com.nuggylib.enchantmentsseer.client.gui.screen.SeersEnchantmentScreen;
+import com.nuggylib.enchantmentsseer.common.CreativeTabEnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.item.SeersEnchantedPageItem;
 import com.nuggylib.enchantmentsseer.client.render.tileentity.SeersEnchantmentTableTileEntityRenderer;
 import com.nuggylib.enchantmentsseer.item.SeersManuscriptItem;
 import com.nuggylib.enchantmentsseer.block.SeersEnchantingTableBlock;
 import com.nuggylib.enchantmentsseer.inventory.container.SeersEnchantingTableContainer;
 import com.nuggylib.enchantmentsseer.tileentity.SeersEnchantingTableTileEntity;
-import com.nuggylib.enchantmentsseer.util.ResourceType;
+import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.ScreenManager;
@@ -137,4 +138,9 @@ public class EnchantmentsSeer
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
+
+    /**
+     * Mekanism creative tab
+     */
+    public static final CreativeTabEnchantmentsSeer tabEnchantmentsSeer = new CreativeTabEnchantmentsSeer();
 }

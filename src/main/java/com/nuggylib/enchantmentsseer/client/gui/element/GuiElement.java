@@ -3,16 +3,18 @@ package com.nuggylib.enchantmentsseer.client.gui.element;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.client.gui.AbstractGui;
 import com.nuggylib.enchantmentsseer.client.gui.GuiUtils;
 import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
 import com.nuggylib.enchantmentsseer.client.gui.element.window.GuiWindow;
 import com.nuggylib.enchantmentsseer.client.render.EnchantmentsSeerRenderer;
 import com.nuggylib.enchantmentsseer.client.render.text.IFancyFontRenderer;
-import com.nuggylib.enchantmentsseer.util.ResourceType;
+import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
@@ -319,6 +321,30 @@ public class GuiElement extends Widget implements IFancyFontRenderer {
         guiObj.displayTooltips(matrix, list, xAxis, yAxis);
     }
 
+    public final void onRenderForeground(MatrixStack matrix, int mouseX, int mouseY, int zOffset, int totalOffset) {
+        if (visible) {
+            matrix.translate(0, 0, zOffset);
+            // update the max total offset to prevent clashing of future overlays
+            AbstractGui.maxZOffset = Math.max(totalOffset, AbstractGui.maxZOffset);
+            // fix render offset for background drawing
+            matrix.translate(-getGuiLeft(), -getGuiTop(), 0);
+            // render background overlay and children above everything else
+            renderBackgroundOverlay(matrix, mouseX, mouseY);
+            // render children just above background overlay
+            children.forEach(child -> child.render(matrix, mouseX, mouseY, 0));
+            children.forEach(child -> child.onDrawBackground(matrix, mouseX, mouseY, 0));
+            // translate back to top right corner and forward to render foregrounds
+            matrix.translate(getGuiLeft(), getGuiTop(), 0);
+            renderForeground(matrix, mouseX, mouseY);
+            // translate forward to render child foreground
+            children.forEach(child -> child.onRenderForeground(matrix, mouseX, mouseY, 50, totalOffset + 50));
+        }
+    }
+
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        drawButtonText(matrix, mouseX, mouseY);
+    }
+
     public enum ButtonBackground {
         DEFAULT(EnchantmentsSeer.getResource(ResourceType.GUI, "button.png")),
         DIGITAL(EnchantmentsSeer.getResource(ResourceType.GUI, "button_digital.png")),
@@ -345,5 +371,24 @@ public class GuiElement extends Widget implements IFancyFontRenderer {
     public interface IClickable {
 
         void onClick(GuiElement element, int mouseX, int mouseY);
+    }
+
+    public final void onDrawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        if (visible) {
+            drawBackground(matrix, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    protected int getButtonTextColor(int mouseX, int mouseY) {
+        return getFGColor();
+    }
+
+    protected void drawButtonText(MatrixStack matrix, int mouseX, int mouseY) {
+        ITextComponent text = getMessage();
+        //Only attempt to draw the message if we have a message to draw
+        if (!text.getString().isEmpty()) {
+            int color = getButtonTextColor(mouseX, mouseY) | MathHelper.ceil(alpha * 255.0F) << 24;
+            drawCenteredTextScaledBound(matrix, text, width - 4, x - getGuiLeft(), y - getGuiTop() + height / 2F - 4, color);
+        }
     }
 }

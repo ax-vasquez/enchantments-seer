@@ -4,8 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
 import com.nuggylib.enchantmentsseer.client.gui.element.window.GuiWindow;
-import com.nuggylib.enchantmentsseer.client.render.text.APILang;
-import com.nuggylib.enchantmentsseer.util.ResourceType;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeerLang;
+import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils.ResourceType;
 
 import javax.annotation.Nonnull;
 
@@ -17,7 +17,7 @@ public class GuiCloseButton extends EnchantmentsSeerImageButton {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        displayTooltip(matrix, APILang.CLOSE.translate(), mouseX, mouseY);
+        displayTooltip(matrix, EnchantmentsSeerLang.CLOSE.translate(), mouseX, mouseY);
     }
 
     @Override

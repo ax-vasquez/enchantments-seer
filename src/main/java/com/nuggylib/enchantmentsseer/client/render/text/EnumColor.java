@@ -1,7 +1,7 @@
 package com.nuggylib.enchantmentsseer.client.render.text;
 
-import com.nuggylib.enchantmentsseer.util.IIncrementalEnum;
-import com.nuggylib.enchantmentsseer.util.math.MathUtils;
+import com.nuggylib.enchantmentsseer.api.IIncrementalEnum;
+import com.nuggylib.enchantmentsseer.api.math.MathUtils;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
