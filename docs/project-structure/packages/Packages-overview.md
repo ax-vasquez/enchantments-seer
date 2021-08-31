@@ -1,4 +1,4 @@
-# Packages overview
+# README
 
 This directory contains documentation regarding the various packages of the project. Note that this directory should
 only contain generally higher-level information about the corresponding concepts. Finer details should be documented
