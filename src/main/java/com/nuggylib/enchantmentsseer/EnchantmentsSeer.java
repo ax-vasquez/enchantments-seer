@@ -45,6 +45,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerItems.ITEMS;
+
 /**
  * The main class for the Enchantments Seer mod
  *
@@ -56,7 +58,7 @@ public class EnchantmentsSeer
     public static final String MOD_ID = "enchantments-seer";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
+    private static final DeferredRegister<Item> ITEMS_LEGACY = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     private static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
     private static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
@@ -68,10 +70,9 @@ public class EnchantmentsSeer
     public static final RegistryObject<ContainerType<SeersEnchantingTableContainer>> SEERS_ENCHANTING_TABLE_CONTAINER_TYPE = CONTAINER_TYPES.register("seers_enchanting_table", () -> new ContainerType<>(SeersEnchantingTableContainer::new));
 
     // Items
-    public static final RegistryObject<Item> SEERS_STONE = ITEMS.register("seers_stone", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
-    public static final RegistryObject<Item> SEERS_MANUSCRIPT = ITEMS.register("seers_manuscript", () -> new SeersManuscriptItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
-    public static final RegistryObject<Item> SEERS_ENCHANTED_PAGE = ITEMS.register("seers_enchanted_page", () -> new SeersEnchantedPageItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
-    public static final RegistryObject<BlockItem> SEERS_ENCHANTING_TABLE_BLOCK_ITEM = ITEMS.register("seers_enchanting_table", () -> new BlockItem(SEERS_ENCHANTING_TABLE_BLOCK.get(), new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
+    public static final RegistryObject<Item> SEERS_MANUSCRIPT = ITEMS_LEGACY.register("seers_manuscript", () -> new SeersManuscriptItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
+    public static final RegistryObject<Item> SEERS_ENCHANTED_PAGE = ITEMS_LEGACY.register("seers_enchanted_page", () -> new SeersEnchantedPageItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
+    public static final RegistryObject<BlockItem> SEERS_ENCHANTING_TABLE_BLOCK_ITEM = ITEMS_LEGACY.register("seers_enchanting_table", () -> new BlockItem(SEERS_ENCHANTING_TABLE_BLOCK.get(), new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
 
     // TileEntityTypes
     public static final RegistryObject<TileEntityType<SeersEnchantingTableTileEntity>> SEERS_ENCHANTING_TABLE_TE_TYPE = TILE_ENTITY_TYPES.register("seers_enchanting_table", () -> TileEntityType.Builder.of(SeersEnchantingTableTileEntity::new, SEERS_ENCHANTING_TABLE_BLOCK.get()).build(null));
@@ -82,6 +83,10 @@ public class EnchantmentsSeer
 
         try {
             LOGGER.info("Registering items");
+            // The "old" deferred register
+            ITEMS_LEGACY.register(FMLJavaModLoadingContext.get().getModEventBus());
+            // TODO: Figure out why this register is also adding a bunch of other items (gold dust and stuff)
+            // The Mekanism-inspired deferred register
             ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
             LOGGER.info("Done registering items");
         } catch (Error e) {
