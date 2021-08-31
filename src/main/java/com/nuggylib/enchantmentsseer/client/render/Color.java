@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.client.render;
 
-import com.nuggylib.enchantmentsseer.util.StatUtils;
+import com.nuggylib.enchantmentsseer.common.util.StatUtils;
 
 import java.util.Objects;
 

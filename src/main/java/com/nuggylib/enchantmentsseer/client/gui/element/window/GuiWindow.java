@@ -10,8 +10,8 @@ import com.nuggylib.enchantmentsseer.client.gui.element.GuiTexturedElement;
 import com.nuggylib.enchantmentsseer.client.gui.element.button.GuiCloseButton;
 import com.nuggylib.enchantmentsseer.client.render.Color;
 import com.nuggylib.enchantmentsseer.client.render.EnchantmentsSeerRenderer;
-import com.nuggylib.enchantmentsseer.inventory.container.IEmptyContainer;
-import com.nuggylib.enchantmentsseer.inventory.container.SelectedWindowData;
+import com.nuggylib.enchantmentsseer.common.inventory.container.IEmptyContainer;
+import com.nuggylib.enchantmentsseer.common.inventory.container.SelectedWindowData;
 import net.minecraft.inventory.container.Container;
 import org.lwjgl.glfw.GLFW;
 

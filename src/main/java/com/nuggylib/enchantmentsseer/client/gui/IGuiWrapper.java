@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.element.GuiElement;
 import com.nuggylib.enchantmentsseer.client.gui.element.window.GuiWindow;
-import com.nuggylib.enchantmentsseer.inventory.container.SelectedWindowData;
+import com.nuggylib.enchantmentsseer.common.inventory.container.SelectedWindowData;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.ItemRenderer;
