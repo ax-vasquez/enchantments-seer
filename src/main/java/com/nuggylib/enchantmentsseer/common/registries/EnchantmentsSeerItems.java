@@ -1,6 +1,7 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
 import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.item.ItemSeersEnchantedPage;
 import com.nuggylib.enchantmentsseer.common.item.ItemSeersManuscript;
 import com.nuggylib.enchantmentsseer.common.item.ItemSeersStone;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ItemDeferredRegister;
@@ -20,5 +21,6 @@ public class EnchantmentsSeerItems {
 
     public static final ItemRegistryObject<Item> SEERS_STONE = ITEMS.register("seers_stone", ItemSeersStone::new);
     public static final ItemRegistryObject<Item> SEERS_MANUSCRIPT = ITEMS.register("seers_manuscript", ItemSeersManuscript::new);
+    public static final ItemRegistryObject<Item> SEERS_ENCHANTED_PAGE = ITEMS.register("seers_enchanted_page", ItemSeersEnchantedPage::new);
 
 }
