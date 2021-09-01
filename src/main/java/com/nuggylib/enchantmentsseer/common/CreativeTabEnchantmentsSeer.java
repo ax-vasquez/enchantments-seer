@@ -25,6 +25,7 @@ public class CreativeTabEnchantmentsSeer extends ItemGroup {
         return EnchantmentsSeerItems.SEERS_MANUSCRIPT.getItemStack();
     }
 
+
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
