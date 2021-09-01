@@ -19,9 +19,9 @@ package com.nuggylib.enchantmentsseer;
 
 import com.nuggylib.enchantmentsseer.client.gui.screen.SeersEnchantmentScreen;
 import com.nuggylib.enchantmentsseer.common.CreativeTabEnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.item.ItemSeersManuscript;
 import com.nuggylib.enchantmentsseer.item.SeersEnchantedPageItem;
 import com.nuggylib.enchantmentsseer.client.render.tileentity.SeersEnchantmentTableTileEntityRenderer;
-import com.nuggylib.enchantmentsseer.item.SeersManuscriptItem;
 import com.nuggylib.enchantmentsseer.block.SeersEnchantingTableBlock;
 import com.nuggylib.enchantmentsseer.inventory.container.SeersEnchantingTableContainer;
 import com.nuggylib.enchantmentsseer.tileentity.SeersEnchantingTableTileEntity;
@@ -70,7 +70,6 @@ public class EnchantmentsSeer
     public static final RegistryObject<ContainerType<SeersEnchantingTableContainer>> SEERS_ENCHANTING_TABLE_CONTAINER_TYPE = CONTAINER_TYPES.register("seers_enchanting_table", () -> new ContainerType<>(SeersEnchantingTableContainer::new));
 
     // Items
-    public static final RegistryObject<Item> SEERS_MANUSCRIPT = ITEMS_LEGACY.register("seers_manuscript", () -> new SeersManuscriptItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
     public static final RegistryObject<Item> SEERS_ENCHANTED_PAGE = ITEMS_LEGACY.register("seers_enchanted_page", () -> new SeersEnchantedPageItem(new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
     public static final RegistryObject<BlockItem> SEERS_ENCHANTING_TABLE_BLOCK_ITEM = ITEMS_LEGACY.register("seers_enchanting_table", () -> new BlockItem(SEERS_ENCHANTING_TABLE_BLOCK.get(), new Item.Properties().tab(ItemGroup.TAB_MATERIALS)));
 

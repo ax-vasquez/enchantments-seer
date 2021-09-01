@@ -22,7 +22,7 @@ public class CreativeTabEnchantmentsSeer extends ItemGroup {
     @Nonnull
     @Override
     public ItemStack makeIcon() {
-        return EnchantmentsSeerItems.SEERS_STONE.getItemStack();
+        return EnchantmentsSeerItems.SEERS_MANUSCRIPT.getItemStack();
     }
 
     @Nonnull
