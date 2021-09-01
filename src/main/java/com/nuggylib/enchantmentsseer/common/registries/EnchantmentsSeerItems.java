@@ -3,6 +3,7 @@ package com.nuggylib.enchantmentsseer.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.item.ItemSeersManuscript;
 import com.nuggylib.enchantmentsseer.common.item.ItemSeersStone;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ItemDeferredRegister;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ItemRegistryObject;
@@ -26,6 +27,7 @@ public class EnchantmentsSeerItems {
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
 
     public static final ItemRegistryObject<Item> SEERS_STONE = ITEMS.register("seers_stone", ItemSeersStone::new);
+    public static final ItemRegistryObject<Item> SEERS_MANUSCRIPT = ITEMS.register("seers_manuscript", ItemSeersManuscript::new);
 
     static {
         for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
