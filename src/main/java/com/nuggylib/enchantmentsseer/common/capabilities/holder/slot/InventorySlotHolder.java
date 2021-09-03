@@ -1,6 +1,7 @@
 package com.nuggylib.enchantmentsseer.common.capabilities.holder.slot;
 
 import com.nuggylib.enchantmentsseer.api.RelativeSide;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.BasicHolder;
 import com.nuggylib.enchantmentsseer.api.inventory.IInventorySlot;
 import net.minecraft.util.Direction;
@@ -18,6 +19,8 @@ import java.util.function.Supplier;
  */
 public class InventorySlotHolder extends BasicHolder<IInventorySlot> implements IInventorySlotHolder {
 
+    private final String LOG_CLASS_PREFIX = InventorySlotHolder.class.getSimpleName();
+
     @Nullable
     private final Predicate<RelativeSide> insertPredicate;
     @Nullable
@@ -30,6 +33,7 @@ public class InventorySlotHolder extends BasicHolder<IInventorySlot> implements 
     }
 
     void addSlot(@Nonnull IInventorySlot slot, RelativeSide... sides) {
+        EnchantmentsSeer.LOGGER.info(String.format("[%s#%s] - Adding slot: %s", LOG_CLASS_PREFIX, "addSlot", slot));
         addSlotInternal(slot, sides);
     }
 

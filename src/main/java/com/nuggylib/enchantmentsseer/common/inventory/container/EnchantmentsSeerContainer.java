@@ -1,15 +1,23 @@
 package com.nuggylib.enchantmentsseer.common.inventory.container;
 
 import com.nuggylib.enchantmentsseer.api.Action;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.inventory.container.property.PropertyData;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.HotBarSlot;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.IInsertableSlot;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.MainInventorySlot;
+import com.nuggylib.enchantmentsseer.common.inventory.container.sync.ISyncableData;
+import com.nuggylib.enchantmentsseer.common.inventory.container.sync.ISyncableData.DirtyType;
+import com.nuggylib.enchantmentsseer.common.inventory.container.sync.SyncableInt;
+import com.nuggylib.enchantmentsseer.common.inventory.container.sync.SyncableItemStack;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeRegistryObject;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.InventoryContainerSlot;
 import com.nuggylib.enchantmentsseer.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
@@ -36,6 +44,7 @@ public abstract class EnchantmentsSeerContainer extends Container {
 
     protected final PlayerInventory inv;
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
+    private final List<ISyncableData> trackedData = new ArrayList<>();
     /**
      * Keeps track of which window the player has open. Only used on the client, so doesn't need to keep track of other players.
      *
@@ -202,6 +211,19 @@ public abstract class EnchantmentsSeerContainer extends Container {
         return stack;
     }
 
+    /**
+     * N.B.
+     *
+     * This method needs to be overridden because, without it, the default implementation (in {@link Container})
+     * attempts to access values in the lastSlots field, which has no contents in our implementation. Without
+     * overriding this method, you'd encounter "Index: 0, Size: 0" errors when attempting to open container-linked
+     * GUIs.
+     */
+    @Override
+    public void broadcastChanges() {
+        // TODO: See if we should do more here other than simply overriding the super class' method
+    }
+
     @Nonnull
     protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull PlayerEntity player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
         int difference = slotStack.getCount() - stackToInsert.getCount();
@@ -258,5 +280,26 @@ public abstract class EnchantmentsSeerContainer extends Container {
      */
     private void clearSelectedWindow(UUID player) {
         selectedWindows.remove(player);
+    }
+
+    public void handleWindowProperty(short property, @Nonnull ItemStack value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableItemStack) {
+            ((SyncableItemStack) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, int value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableInt) {
+            ((SyncableInt) data).set(value);
+        } else if (data instanceof SyncableItemStack) {
+            ((SyncableItemStack) data).set(value);
+        }
+    }
+
+    public interface ISpecificContainerTracker {
+
+        List<ISyncableData> getSpecificSyncableData();
     }
 }

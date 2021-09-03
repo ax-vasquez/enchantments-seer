@@ -2,7 +2,7 @@ package com.nuggylib.enchantmentsseer.client.gui.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.AbstractGui;
 import com.nuggylib.enchantmentsseer.client.gui.GuiUtils;
 import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
@@ -389,6 +389,27 @@ public class GuiElement extends Widget implements IFancyFontRenderer {
         if (!text.getString().isEmpty()) {
             int color = getButtonTextColor(mouseX, mouseY) | MathHelper.ceil(alpha * 255.0F) << 24;
             drawCenteredTextScaledBound(matrix, text, width - 4, x - getGuiLeft(), y - getGuiTop() + height / 2F - 4, color);
+        }
+    }
+
+    public boolean hasPersistentData() {
+        return children.stream().anyMatch(GuiElement::hasPersistentData);
+    }
+
+    public void syncFrom(GuiElement element) {
+        int numChildren = children.size();
+        if (numChildren > 0) {
+            for (int i = 0; i < element.children.size(); i++) {
+                GuiElement prevChild = element.children.get(i);
+                if (prevChild.hasPersistentData() && i < numChildren) {
+                    GuiElement child = children.get(i);
+                    // we're forced to assume that the children list is the same before and after the resize.
+                    // for verification, we run a lightweight class equality check
+                    if (child.getClass() == prevChild.getClass()) {
+                        child.syncFrom(prevChild);
+                    }
+                }
+            }
         }
     }
 }

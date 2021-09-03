@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.tile.base;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.api.NBTConstants;
 import com.nuggylib.enchantmentsseer.api.DataHandlerUtils;
 import com.nuggylib.enchantmentsseer.api.inventory.IEnchantmentsSeerInventory;
@@ -12,6 +12,7 @@ import com.nuggylib.enchantmentsseer.common.block.attribute.AttributeGui;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.IInventorySlotHolder;
 import com.nuggylib.enchantmentsseer.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import com.nuggylib.enchantmentsseer.common.capabilities.resolver.manager.ItemHandlerManager;
+import com.nuggylib.enchantmentsseer.common.tile.component.TileComponentConfig;
 import com.nuggylib.enchantmentsseer.common.tile.component.config.ITileComponent;
 import com.nuggylib.enchantmentsseer.common.tile.interfaces.ISustainedInventory;
 import com.nuggylib.enchantmentsseer.common.tile.interfaces.ITileDirectional;
@@ -20,6 +21,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -28,7 +30,9 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,11 +48,13 @@ import java.util.Set;
  *
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/tile/base/TileEntityMekanism.java"
  */
-public abstract class TileEntityEnchantmentsSeer extends TileEntity implements ITickableTileEntity, IEnchantmentsSeerInventory, ISustainedInventory,
+public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity implements ITickableTileEntity, IEnchantmentsSeerInventory, ISustainedInventory,
         ITileDirectional {
 
     protected final ItemHandlerManager itemHandlerManager;
     private final List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
+    // Taken from https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/tile/prefab/TileEntityConfigurableMachine.java#L14
+    public TileComponentConfig configComponent;//does not tick!
 
     /**
      * The players currently using this block.
@@ -118,6 +124,18 @@ public abstract class TileEntityEnchantmentsSeer extends TileEntity implements I
     }
 
     public ActionResultType openGui(PlayerEntity player) {
+        try {
+            if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
+                // NOTE: Without the !isRemote() check, casting player to ServerPlayerEntity will fail - you must always ensure that this check is performed
+                NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(blockProvider.getBlock(), AttributeGui.class).getProvider(this), worldPosition);
+                return ActionResultType.SUCCESS;
+            }
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            EnchantmentsSeer.LOGGER.error(String.format("Failed to open GUI. There is a problem with the container and/or gui slot configuration for: %s", blockProvider.getBlock().getRegistryName()));
+        } catch (Exception e) {
+            EnchantmentsSeer.LOGGER.error(String.format("Failed to open menu. Error: %s", e));
+        }
+
         return ActionResultType.PASS;
     }
 
@@ -227,4 +245,16 @@ public abstract class TileEntityEnchantmentsSeer extends TileEntity implements I
         }
     }
     //End methods ITileDirectional
+
+    /**
+     * Update call for machines. Use instead of updateEntity -- it's called every tick on the client side.
+     */
+    protected void onUpdateClient() {
+    }
+
+    /**
+     * Update call for machines. Use instead of updateEntity -- it's called every tick on the server side.
+     */
+    protected void onUpdateServer() {
+    }
 }

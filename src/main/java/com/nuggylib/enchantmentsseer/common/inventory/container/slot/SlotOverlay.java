@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.inventory.container.slot;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 

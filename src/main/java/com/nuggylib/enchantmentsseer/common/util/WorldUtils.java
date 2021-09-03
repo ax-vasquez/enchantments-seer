@@ -1,12 +1,13 @@
 package com.nuggylib.enchantmentsseer.common.util;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -14,6 +15,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.common.util.Constants;
 import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nonnull;
@@ -315,6 +317,39 @@ public class WorldUtils {
      */
     public static boolean isValidReplaceableBlock(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         return World.isInWorldBounds(pos) && world.getBlockState(pos).getMaterial().isReplaceable();
+    }
+
+    /**
+     * Converts a {@link BlockPos} to a long representing the {@link ChunkPos} it is in without creating a temporary {@link ChunkPos} object.
+     *
+     * @param pos Pos to convert.
+     */
+    public static long getChunkPosAsLong(BlockPos pos) {
+        long x = pos.getX() >> 4;
+        long z = pos.getZ() >> 4;
+        return x & 0xFFFFFFFFL | (z & 0xFFFFFFFFL) << 32;
+    }
+
+    /**
+     * Converts a long representing a {@link ChunkPos} to a {@link BlockPos} without creating a temporary {@link ChunkPos} object.
+     *
+     * @param chunkPos Pos to convert.
+     */
+    public static BlockPos getBlockPosFromChunkPos(long chunkPos) {
+        return new BlockPos((int) chunkPos, 0, (int) (chunkPos >> 32));
+    }
+
+    /**
+     * Marks a block for a render update if loaded.
+     *
+     * @param world world the block is in
+     * @param pos   Position of the block
+     * @param state The block state at the position
+     */
+    public static void updateBlock(@Nullable World world, @Nonnull BlockPos pos, BlockState state) {
+        if (isBlockLoaded(world, pos)) {
+            world.sendBlockUpdated(pos, state, state, Constants.BlockFlags.DEFAULT);
+        }
     }
 
 }

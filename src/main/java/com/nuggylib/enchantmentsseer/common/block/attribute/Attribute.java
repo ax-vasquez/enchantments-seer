@@ -1,6 +1,7 @@
 package com.nuggylib.enchantmentsseer.common.block.attribute;
 
 import com.google.common.collect.Lists;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.block.interfaces.ITypeBlock;
 import com.nuggylib.enchantmentsseer.common.tile.base.TileEntityEnchantmentsSeer;
 import net.minecraft.block.AbstractBlock;

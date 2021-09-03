@@ -1,6 +1,5 @@
 package com.nuggylib.enchantmentsseer.common;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

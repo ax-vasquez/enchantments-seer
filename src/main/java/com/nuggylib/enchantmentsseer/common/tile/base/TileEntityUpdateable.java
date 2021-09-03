@@ -1,7 +1,10 @@
 package com.nuggylib.enchantmentsseer.common.tile.base;
 
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.network.to_client.PacketUpdateTile;
 import com.nuggylib.enchantmentsseer.common.tile.interfaces.ITileWrapper;
 import com.nuggylib.enchantmentsseer.api.Coord4D;
+import com.nuggylib.enchantmentsseer.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -16,6 +19,9 @@ import java.util.Objects;
 
 /**
  * Shamelessly-copied from the Mekanism code base; all credit goes to them.
+ *
+ * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally we
+ * improve the performance of markDirty by not firing neighbor updates unless the markDirtyComparator method is overridden.
  *
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/tile/base/TileEntityUpdateable.java"
  */
@@ -117,6 +123,54 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     @Override
     public Coord4D getTileCoord() {
         return cacheCoord && cachedCoord != null ? cachedCoord : ITileWrapper.super.getTileCoord();
+    }
+
+    public void sendUpdatePacket() {
+        sendUpdatePacket(this);
+    }
+
+    public void sendUpdatePacket(TileEntity tracking) {
+        if (isRemote()) {
+            EnchantmentsSeer.LOGGER.warn("Update packet call requested from client side", new IllegalStateException());
+        } else if (isRemoved()) {
+            EnchantmentsSeer.LOGGER.warn("Update packet call requested for removed tile", new IllegalStateException());
+        } else {
+            //Note: We use our own update packet/channel to avoid chunk trashing and minecraft attempting to rerender
+            // the entire chunk when most often we are just updating a TileEntityRenderer, so the chunk itself
+            // does not need to and should not be redrawn
+            EnchantmentsSeer.packetHandler.sendToAllTracking(new PacketUpdateTile(this), tracking);
+        }
+    }
+
+    public void handleUpdatePacket(@Nonnull CompoundNBT tag) {
+        handleUpdateTag(getBlockState(), tag);
+    }
+
+    /**
+     * Used for checking if we need to update comparators.
+     *
+     * @apiNote Only call on the server
+     */
+    public void markDirtyComparator() {
+    }
+
+    protected void updateBlockState(@Nonnull BlockState newState) {
+        // TODO: Figure out how Mekanism accesses blockState, which is private in TileEntity
+//        this.blockState = newState;
+    }
+
+    public void markDirty(boolean recheckBlockState) {
+        //Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
+        // and if our block supports having a comparator signal, instead of always doing it
+        if (level != null) {
+            if (recheckBlockState) {
+                updateBlockState(level.getBlockState(worldPosition));
+            }
+            WorldUtils.markChunkDirty(level, worldPosition);
+            if (!isRemote()) {
+                markDirtyComparator();
+            }
+        }
     }
 }
 

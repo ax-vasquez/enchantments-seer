@@ -1,7 +1,8 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.item.ItemSeersEnchantedPage;
+
 import com.nuggylib.enchantmentsseer.common.item.ItemSeersManuscript;
 import com.nuggylib.enchantmentsseer.common.item.ItemSeersStone;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ItemDeferredRegister;

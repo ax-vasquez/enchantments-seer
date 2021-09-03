@@ -15,7 +15,11 @@ import javax.annotation.Nonnull;
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/tile/component/config/DataType.java"
  */
 public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
-    NONE(EnchantmentsSeerLang.SIDE_DATA_NONE, EnumColor.GRAY);
+    NONE(EnchantmentsSeerLang.SIDE_DATA_NONE, EnumColor.GRAY),
+    INPUT(EnchantmentsSeerLang.SIDE_DATA_INPUT, EnumColor.DARK_RED),
+    INPUT_OUTPUT(EnchantmentsSeerLang.SIDE_DATA_INPUT_OUTPUT, EnumColor.PURPLE),
+    OUTPUT(EnchantmentsSeerLang.SIDE_DATA_OUTPUT, EnumColor.DARK_BLUE),
+    ;
 
     private static final DataType[] TYPES = values();
     private final EnumColor color;

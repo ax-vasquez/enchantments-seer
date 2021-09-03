@@ -1,7 +1,7 @@
 package com.nuggylib.enchantmentsseer.client.gui.element.button;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
 import com.nuggylib.enchantmentsseer.client.gui.element.window.GuiWindow;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeerLang;

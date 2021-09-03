@@ -1,16 +1,25 @@
 package com.nuggylib.enchantmentsseer.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.nuggylib.enchantmentsseer.client.gui.element.GuiElement;
+import com.nuggylib.enchantmentsseer.client.gui.element.window.GuiWindow;
+import com.nuggylib.enchantmentsseer.client.render.EnchantmentsSeerRenderer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.element.slot.GuiSlot;
 import com.nuggylib.enchantmentsseer.client.gui.element.slot.SlotType;
 import com.nuggylib.enchantmentsseer.client.render.text.IFancyFontRenderer;
+import com.nuggylib.enchantmentsseer.common.inventory.container.EnchantmentsSeerContainer;
+import com.nuggylib.enchantmentsseer.common.inventory.container.SelectedWindowData;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.ContainerSlotType;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.InventoryContainerSlot;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.SlotOverlay;
+import com.nuggylib.enchantmentsseer.common.lib.collection.LRU;
 import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils.ResourceType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -18,9 +27,14 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Base GUI class
@@ -48,15 +62,83 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
     public static final ResourceLocation SHADOW = EnchantmentsSeer.getResource(ResourceType.GUI, "shadow.png");
     public static final ResourceLocation BLUR = EnchantmentsSeer.getResource(ResourceType.GUI, "blur.png");
 
+    // TODO: It appears we need to add windows to the LRU for the corresponding GUI; I checked the logs and it seems the children field is never populated
+    protected final LRU<GuiWindow> windows = new LRU<>();
+    protected final List<GuiElement> focusListeners = new ArrayList<>();
+    public boolean switchingToJEI;
+
     public static int maxZOffset;
 
     public AbstractGui(CONTAINER container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
+        EnchantmentsSeer.LOGGER.info("AbstractGui#AbstractGui() (constructor)");
     }
 
     @Override
-    protected void renderBg(MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
+    public void init(@Nonnull Minecraft minecraft, int width, int height) {
+        EnchantmentsSeer.LOGGER.info("AbstractGui#init()");
+        //Mark that we are not switching to JEI if we start being initialized again
+        switchingToJEI = false;
+        //Note: We are forced to do the logic that normally would be inside the "resize" method
+        // here in init, as when mods like JEI take over the screen to show recipes, and then
+        // return the screen to the "state" it was beforehand it does not actually properly
+        // transfer the state from the previous instance to the new instance. If we run the
+        // code we normally would run for when things get resized, we then are able to
+        // properly reinstate/transfer the states of the various elements
+        List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
+        for (int i = 0; i < buttons.size(); i++) {
+            Widget widget = buttons.get(i);
+            if (widget instanceof GuiElement && ((GuiElement) widget).hasPersistentData()) {
+                prevElements.add(Pair.of(i, (GuiElement) widget));
+            }
+        }
+        // flush the focus listeners list unless it's an overlay
+        focusListeners.removeIf(element -> !element.isOverlay);
+        int prevLeft = leftPos, prevTop = topPos;
+        super.init(minecraft, width, height);
 
+        EnchantmentsSeer.LOGGER.info("Adding child windows");
+        // TODO: Figure out how to make sure windows has values in it
+        windows.forEach(window -> {
+            EnchantmentsSeer.LOGGER.info(String.format("Adding child window: %s", window));
+            window.resize(prevLeft, prevTop, leftPos, topPos);
+            children.add(window);
+        });
+        EnchantmentsSeer.LOGGER.info("Finished adding child windows");
+
+        prevElements.forEach(e -> {
+            if (e.getLeft() < buttons.size()) {
+                Widget widget = buttons.get(e.getLeft());
+                // we're forced to assume that the children list is the same before and after the resize.
+                // for verification, we run a lightweight class equality check
+                // Note: We do not perform an instance check on widget to ensure it is a GuiElement, as that is
+                // ensured by the class comparison, and the restrictions of what can go in prevElements
+                if (widget.getClass() == e.getRight().getClass()) {
+                    ((GuiElement) widget).syncFrom(e.getRight());
+                }
+            }
+        });
+    }
+
+    // TODO: Fix the textures - we just need the assets to use when rendering the base GUI
+    /**
+     * Render the GUI background
+     *
+     * This is the controlling method for all GUIs' backgrounds rendered in our mod.
+     *
+     * Note that, without rendering a background in this method, you'll likely encounter `java.lang.IndexOutOfBoundsException: Index: 0, Size: 0`
+     */
+    @Override
+    protected void renderBg(MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
+        EnchantmentsSeer.LOGGER.info("AbstractGui#renderBg");
+        //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
+        // it in an unexpected state.
+        EnchantmentsSeerRenderer.resetColor();
+        if (width < 8 || height < 8) {
+            EnchantmentsSeer.LOGGER.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
+            return;
+        }
+        GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, leftPos, topPos, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
@@ -64,26 +146,46 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
         return false;
     }
 
+    /**
+     * Render the GUI
+     *
+     * This is the controlling method for all GUIs rendered in our mod.
+     *
+     * Note that, without rendering a background in this method, you'll likely encounter `java.lang.IndexOutOfBoundsException: Index: 0, Size: 0`
+     */
     @Override
     public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-
+        EnchantmentsSeer.LOGGER.info("AbstractGui#render");
+        // shift back a whole lot so we can stack more windows
+        RenderSystem.translated(0, 0, -500);
+        matrix.pushPose();
+        renderBackground(matrix);
+        //Apply our matrix stack to the render system and pass an unmodified one to the super method
+        // Vanilla still renders the items into the GUI using render system transformations so this
+        // is required to not have tooltips of GuiElements rendering behind the items
+        super.render(matrix, mouseX, mouseY, partialTicks);
+        matrix.popPose();
+        RenderSystem.translated(0, 0, 500);
     }
 
     @Override
     public FontRenderer getFont() {
+        EnchantmentsSeer.LOGGER.info("AbstractGui#getFont");
         return font;
     }
 
     @Override
     public ItemRenderer getItemRenderer() {
+        EnchantmentsSeer.LOGGER.info("AbstractGui#getItemRenderer");
         return itemRenderer;
     }
 
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-
+        EnchantmentsSeer.LOGGER.info("AbstractGui#drawForegroundText");
     }
 
     protected void addSlots() {
+        EnchantmentsSeer.LOGGER.info("Adding slots from AbstractGui");
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
             Slot slot = menu.slots.get(i);
@@ -109,6 +211,7 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
     }
 
     protected ItemStack checkValidity(int slotIndex) {
+        EnchantmentsSeer.LOGGER.info("AbstractGui#checkValidity(int)");
         return ItemStack.EMPTY;
     }
 
@@ -117,8 +220,79 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
      * elements can and should be added after the slots.
      */
     protected void addGuiElements() {
+        EnchantmentsSeer.LOGGER.info("AbstractGui#addGuiElements");
         // TODO: See if the check that Mekanism had was necessary (they use a variable that appears to be defaulting to true, according to their comments)
         addSlots();
+    }
+
+    @Override
+    public void tick() {
+        EnchantmentsSeer.LOGGER.info("AbstractGui#tick()");
+        super.tick();
+        children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
+        windows.forEach(GuiWindow::tick);
+    }
+
+    @Override
+    public void addWindow(GuiWindow window) {
+        GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
+        if (top != null) {
+            top.onFocusLost();
+        }
+        windows.add(window);
+        window.onFocused();
+    }
+
+    @Override
+    public void removeWindow(GuiWindow window) {
+        if (!windows.isEmpty()) {
+            GuiWindow top = windows.iterator().next();
+            windows.remove(window);
+            if (window == top) {
+                //If the window was the top window, make it lose focus
+                window.onFocusLost();
+                //Amd check if a new window is now in focus
+                GuiWindow newTop = windows.isEmpty() ? null : windows.iterator().next();
+                if (newTop == null) {
+                    //If there isn't any because they have all been removed
+                    // fire an "event" for any post all windows being closed
+                    lastWindowRemoved();
+                } else {
+                    //Otherwise mark the new window as being focused
+                    newTop.onFocused();
+                }
+                //Update the listener to being the window that is now selected or null if none are
+                setFocused(newTop);
+            }
+        }
+    }
+
+    protected void lastWindowRemoved() {
+        //Mark that no windows are now selected
+        if (menu instanceof EnchantmentsSeerContainer) {
+            ((EnchantmentsSeerContainer) menu).setSelectedWindow(null);
+        }
+    }
+
+    @Override
+    public void setSelectedWindow(SelectedWindowData selectedWindow) {
+        if (menu instanceof EnchantmentsSeerContainer) {
+            ((EnchantmentsSeerContainer) menu).setSelectedWindow(selectedWindow);
+        }
+    }
+
+    @Nullable
+    @Override
+    public GuiWindow getWindowHovering(double mouseX, double mouseY) {
+        return windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
+    }
+
+    public Collection<GuiWindow> getWindows() {
+        return windows;
+    }
+
+    public LRU<GuiWindow>.LRUIterator getWindowsDescendingIterator() {
+        return windows.descendingIterator();
     }
 
 }

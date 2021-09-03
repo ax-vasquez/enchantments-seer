@@ -1,6 +1,7 @@
 package com.nuggylib.enchantmentsseer.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.inventory.container.tile.EnchantmentsSeerTileContainer;
 import com.nuggylib.enchantmentsseer.common.tile.base.TileEntityEnchantmentsSeer;
 import net.minecraft.entity.player.PlayerInventory;
@@ -21,6 +22,7 @@ public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantment
 
     protected GuiEnchantmentsSeerTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeer#GuiEnchantmentsSeerTile (constructor)");
         tile = container.getTileEntity();
     }
 
@@ -31,20 +33,22 @@ public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantment
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
+        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#addGuiElements");
         addGenericTabs();
     }
 
     protected void addGenericTabs() {
-
+        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#addGenericTabs called");
     }
 
     public void renderTitleText(MatrixStack matrix) {
+        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#renderTitleText called");
         drawTitleText(matrix, tile.getName(), titleLabelY);
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
-
+        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#drawForegroundText called");
     }
 }
