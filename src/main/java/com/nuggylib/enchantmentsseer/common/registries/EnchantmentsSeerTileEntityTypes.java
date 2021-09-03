@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.registration.impl.TileEntityTypeDeferredRegister;
 import com.nuggylib.enchantmentsseer.common.registration.impl.TileEntityTypeRegistryObject;
 import com.nuggylib.enchantmentsseer.common.tile.block.TileEntitySeersEnchantmentTable;

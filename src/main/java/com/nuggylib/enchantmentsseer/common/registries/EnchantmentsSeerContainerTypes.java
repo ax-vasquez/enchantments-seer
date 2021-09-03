@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.inventory.container.tile.EnchantmentsSeerTileContainer;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeDeferredRegister;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeRegistryObject;

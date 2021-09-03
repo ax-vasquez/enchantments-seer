@@ -1,15 +1,13 @@
 package com.nuggylib.enchantmentsseer.client.gui.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
-import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils;
 import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 

@@ -1,5 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.block.prefab;
 
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.block.IHasTileEntity;
 import com.nuggylib.enchantmentsseer.common.block.attribute.AttributeGui;
 import com.nuggylib.enchantmentsseer.common.content.BlockTypeTile;

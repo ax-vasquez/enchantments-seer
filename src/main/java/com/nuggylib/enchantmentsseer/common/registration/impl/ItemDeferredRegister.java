@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.registration.impl;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.api.providers.IItemProvider;
 import com.nuggylib.enchantmentsseer.client.render.text.EnumColor;
 import com.nuggylib.enchantmentsseer.client.render.text.TextComponentUtil;
@@ -30,7 +30,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         super(modid, ForgeRegistries.ITEMS);
     }
 
-    public static Item.Properties getMekBaseProperties() {
+    public static Item.Properties getBaseProperties() {
         return new Item.Properties().tab(EnchantmentsSeer.tabEnchantmentsSeer);
     }
 
@@ -53,7 +53,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {
-        return register(name, () -> sup.apply(getMekBaseProperties()));
+        return register(name, () -> sup.apply(getBaseProperties()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {

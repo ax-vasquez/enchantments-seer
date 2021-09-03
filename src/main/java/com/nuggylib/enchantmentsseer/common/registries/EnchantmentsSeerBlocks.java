@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.block.prefab.BlockTile;
 import com.nuggylib.enchantmentsseer.common.content.BlockTypeTile;
 import com.nuggylib.enchantmentsseer.common.item.block.ItemBlockEnchantmentsSeer;

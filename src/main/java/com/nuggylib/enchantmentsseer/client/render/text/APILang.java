@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.client.render.text;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import net.minecraft.util.Util;
 
 /**

@@ -1,6 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.capabilities;
 
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -112,5 +112,15 @@ public class CapabilityCache {
      */
     public void invalidateAll() {
         uniqueResolvers.forEach(ICapabilityResolver::invalidateAll);
+    }
+
+    /**
+     * Checks if the given capability is disabled for the specific side.
+     *
+     * @return {@code true} if the capability is disabled, {@code false} otherwise.
+     */
+    public boolean isCapabilityDisabled(Capability<?> capability, @Nullable Direction side) {
+        // TODO: See if we can remove this - we don't need to use capabilities
+        return false;
     }
 }

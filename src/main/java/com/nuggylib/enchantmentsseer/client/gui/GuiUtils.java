@@ -2,7 +2,7 @@ package com.nuggylib.enchantmentsseer.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.nuggylib.enchantmentsseer.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.element.GuiElement;
 import com.nuggylib.enchantmentsseer.client.render.EnchantmentsSeerRenderer;
 import net.minecraft.client.gui.FontRenderer;
@@ -82,6 +82,7 @@ public class GuiUtils {
     // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture; small textures will tank FPS due
     // to tiling
     public static void renderBackgroundTexture(MatrixStack matrix, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
+        EnchantmentsSeer.LOGGER.info("GuiUtils#renderBackgroundTexture");
         // render as much side as we can, based on element dimensions
         int sideWidth = Math.min(texSideWidth, width / 2);
         int sideHeight = Math.min(texSideHeight, height / 2);
