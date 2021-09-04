@@ -55,7 +55,6 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
         // Ensures the slots are defined before trying to use them
         configComponent.setupItemIOConfig(inputSlot, outputSlot);
-        EnchantmentsSeer.LOGGER.info(String.format("INPUT SLOT: %s", inputSlot));
         inputHandler = InputHelper.getInputHandler(inputSlot);
     }
 
@@ -70,14 +69,12 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        EnchantmentsSeer.LOGGER.info("TileEntitySeersEnchantmentTable#load(BlockState, CompoundNBT)");
     }
 
     @Nonnull
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
         super.save(nbtTags);
-        EnchantmentsSeer.LOGGER.info("TileEntitySeersEnchantmentTable#save(CompoundNBT)");
         return nbtTags;
     }
 
@@ -138,18 +135,15 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
     }
 
     public ITextComponent getName() {
-        EnchantmentsSeer.LOGGER.info("TileEntitySeersEnchantmentTable#getName()");
         return (ITextComponent)(this.name != null ? this.name : new TranslationTextComponent("container.enchant"));
     }
 
     public void setCustomName(@Nullable ITextComponent p_200229_1_) {
-        EnchantmentsSeer.LOGGER.info("TileEntitySeersEnchantmentTable#setCustomName(ITextComponent)");
         this.name = p_200229_1_;
     }
 
     @Nullable
     public ITextComponent getCustomName() {
-        EnchantmentsSeer.LOGGER.info("TileEntitySeersEnchantmentTable#getCustomName()");
         return this.name;
     }
 

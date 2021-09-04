@@ -3,7 +3,7 @@ package com.nuggylib.enchantmentsseer.client.gui.element;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
-import com.nuggylib.enchantmentsseer.client.gui.AbstractGui;
+import com.nuggylib.enchantmentsseer.client.gui.GuiEnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.GuiUtils;
 import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
 import com.nuggylib.enchantmentsseer.client.gui.element.window.GuiWindow;
@@ -325,7 +325,7 @@ public class GuiElement extends Widget implements IFancyFontRenderer {
         if (visible) {
             matrix.translate(0, 0, zOffset);
             // update the max total offset to prevent clashing of future overlays
-            AbstractGui.maxZOffset = Math.max(totalOffset, AbstractGui.maxZOffset);
+            GuiEnchantmentsSeer.maxZOffset = Math.max(totalOffset, GuiEnchantmentsSeer.maxZOffset);
             // fix render offset for background drawing
             matrix.translate(-getGuiLeft(), -getGuiTop(), 0);
             // render background overlay and children above everything else

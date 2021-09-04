@@ -16,7 +16,7 @@ public class EnchantmentsSeerUtils {
         GUI_BAR("gui/bar"),
         GUI_HUD("gui/hud"),
         GUI_PROGRESS("gui/progress"),
-        GUI_SLOT("gui/slot"),
+        GUI_SLOT("textures/gui/slot"),
         GUI_TAB("gui/tabs"),
         SOUND("sound"),
         RENDER("render"),

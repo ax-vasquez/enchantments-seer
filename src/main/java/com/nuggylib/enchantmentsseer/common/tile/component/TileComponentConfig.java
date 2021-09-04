@@ -178,7 +178,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupItemIOConfig(List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean alwaysAllow) {
-        EnchantmentsSeer.LOGGER.info("Setting up IO configuration for Tile Entity");
         ConfigInfo itemConfig = getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
             itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, alwaysAllow, inputSlots));

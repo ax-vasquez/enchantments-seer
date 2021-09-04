@@ -16,13 +16,12 @@ import javax.annotation.Nonnull;
  * @param <CONTAINER>
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/client/gui/GuiMekanismTile.java"
  */
-public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantmentsSeer, CONTAINER extends EnchantmentsSeerTileContainer<TILE>> extends AbstractGui<CONTAINER> {
+public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantmentsSeer, CONTAINER extends EnchantmentsSeerTileContainer<TILE>> extends GuiEnchantmentsSeer<CONTAINER> {
 
     protected final TILE tile;
 
     protected GuiEnchantmentsSeerTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeer#GuiEnchantmentsSeerTile (constructor)");
         tile = container.getTileEntity();
     }
 
@@ -33,22 +32,18 @@ public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantment
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#addGuiElements");
         addGenericTabs();
     }
 
-    protected void addGenericTabs() {
-        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#addGenericTabs called");
-    }
+    protected void addGenericTabs() {}
 
     public void renderTitleText(MatrixStack matrix) {
-        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#renderTitleText called");
+        EnchantmentsSeer.LOGGER.info(String.format("GuiEnchantmentsSeerTile#renderTitleText: %s", tile.getName()));
         drawTitleText(matrix, tile.getName(), titleLabelY);
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
-        EnchantmentsSeer.LOGGER.info("GuiEnchantmentsSeerTile#drawForegroundText called");
     }
 }

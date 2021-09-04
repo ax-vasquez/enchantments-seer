@@ -5,8 +5,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.nuggylib.enchantmentsseer.client.gui.GuiEnchantmentsSeerTile;
 import com.nuggylib.enchantmentsseer.client.gui.element.GuiInnerScreen;
+import com.nuggylib.enchantmentsseer.client.gui.element.slot.GuiSlot;
+import com.nuggylib.enchantmentsseer.client.gui.element.slot.SlotType;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeerLang;
+import com.nuggylib.enchantmentsseer.common.inventory.container.slot.SlotOverlay;
 import com.nuggylib.enchantmentsseer.common.inventory.container.tile.EnchantmentsSeerTileContainer;
 import com.nuggylib.enchantmentsseer.common.tile.block.TileEntitySeersEnchantmentTable;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -37,23 +40,19 @@ public class GuiSeersEnchantingTable extends GuiEnchantmentsSeerTile<TileEntityS
 
     public GuiSeersEnchantingTable(EnchantmentsSeerTileContainer<TileEntitySeersEnchantmentTable> container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
-        EnchantmentsSeer.LOGGER.info(String.format("Creating Seer's Enchanting Table GUI with inventory: %s", inventory));
+        EnchantmentsSeer.LOGGER.info("GuiSeersEnchantingTable#constructor");
     }
 
     @Override
     protected void addGuiElements() {
-        EnchantmentsSeer.LOGGER.info("GuiSeersEnchantingTable#addGuiElements");
+        EnchantmentsSeer.LOGGER.info(String.format("GuiSeersEnchantingTable#addGuiElements: %s", tile.getName()));
         super.addGuiElements();
-        EnchantmentsSeer.LOGGER.info("Adding GUI elements for Seer's Enchanting Table");
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 28, () -> Arrays.asList(
-                EnchantmentsSeerLang.ENCHANT_ITEM.translate(),
-                EnchantmentsSeerLang.ENCHANT_REAGENT.translate()
-        )));
+        addButton(new GuiSlot(SlotType.INPUT, this, 145, 20));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        EnchantmentsSeer.LOGGER.info("Drawing foreground for Seer's Enchanting Table");
+        EnchantmentsSeer.LOGGER.info(String.format("GuiSeersEnchantingTable#drawForegroundText: %s", tile.getName()));
         renderTitleText(matrix);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
