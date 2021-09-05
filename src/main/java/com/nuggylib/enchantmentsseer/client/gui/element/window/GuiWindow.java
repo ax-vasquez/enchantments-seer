@@ -2,7 +2,7 @@ package com.nuggylib.enchantmentsseer.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.nuggylib.enchantmentsseer.client.gui.AbstractGui;
+import com.nuggylib.enchantmentsseer.client.gui.GuiEnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.client.gui.GuiUtils;
 import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
 import com.nuggylib.enchantmentsseer.client.gui.element.GuiElement;
@@ -38,7 +38,7 @@ public class GuiWindow extends GuiTexturedElement {
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, SelectedWindowData windowData) {
-        super(AbstractGui.BASE_BACKGROUND, gui, x, y, width, height);
+        super(GuiEnchantmentsSeer.BASE_BACKGROUND, gui, x, y, width, height);
         this.windowData = windowData;
         isOverlay = true;
         active = true;
@@ -71,8 +71,8 @@ public class GuiWindow extends GuiTexturedElement {
                 prevDY = 0;
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
-            if (gui() instanceof AbstractGui) {
-                Container c = ((AbstractGui<?>) gui()).getMenu();
+            if (gui() instanceof GuiEnchantmentsSeer) {
+                Container c = ((GuiEnchantmentsSeer<?>) gui()).getMenu();
                 // This is a somewhat unnecessary check we have - Mekanism has this check in place since they have more block types - we can keep it
                 // just so we have the option to more-heavily integrate with Mekanism later (and want to continue using their design patterns)
                 if (!(c instanceof IEmptyContainer)) {
@@ -114,7 +114,7 @@ public class GuiWindow extends GuiTexturedElement {
             RenderSystem.color4f(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            GuiUtils.renderBackgroundTexture(matrix, AbstractGui.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
+            GuiUtils.renderBackgroundTexture(matrix, GuiEnchantmentsSeer.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
             EnchantmentsSeerRenderer.resetColor();
         }
         minecraft.textureManager.bind(getResource());
@@ -154,7 +154,7 @@ public class GuiWindow extends GuiTexturedElement {
         RenderSystem.color4f(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        GuiUtils.renderBackgroundTexture(matrix, AbstractGui.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
+        GuiUtils.renderBackgroundTexture(matrix, GuiEnchantmentsSeer.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
         EnchantmentsSeerRenderer.resetColor();
     }
 

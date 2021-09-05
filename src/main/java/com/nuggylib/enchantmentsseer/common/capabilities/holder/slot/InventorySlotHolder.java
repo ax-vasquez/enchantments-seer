@@ -33,7 +33,6 @@ public class InventorySlotHolder extends BasicHolder<IInventorySlot> implements 
     }
 
     void addSlot(@Nonnull IInventorySlot slot, RelativeSide... sides) {
-        EnchantmentsSeer.LOGGER.info(String.format("[%s#%s] - Adding slot: %s", LOG_CLASS_PREFIX, "addSlot", slot));
         addSlotInternal(slot, sides);
     }
 

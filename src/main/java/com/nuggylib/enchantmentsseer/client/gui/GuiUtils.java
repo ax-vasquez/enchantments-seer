@@ -48,41 +48,40 @@ public class GuiUtils {
         EnchantmentsSeerRenderer.bindTexture(resource);
         //Left Side
         //Top Left Corner
-        AbstractGui.blit(matrix, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Left Middle
         if (centerHeight > 0) {
-            AbstractGui.blit(matrix, left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            GuiEnchantmentsSeer.blit(matrix, left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Left Corner
-        AbstractGui.blit(matrix, left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle
-            AbstractGui.blit(matrix, leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
+            GuiEnchantmentsSeer.blit(matrix, leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
-                AbstractGui.blit(matrix, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
+                GuiEnchantmentsSeer.blit(matrix, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
             }
             //Bottom Middle
-            AbstractGui.blit(matrix, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
+            GuiEnchantmentsSeer.blit(matrix, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
         }
 
         //Right side
         //Top Right Corner
-        AbstractGui.blit(matrix, rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Right Middle
         if (centerHeight > 0) {
-            AbstractGui.blit(matrix, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            GuiEnchantmentsSeer.blit(matrix, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Right Corner
-        AbstractGui.blit(matrix, rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
     // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture; small textures will tank FPS due
     // to tiling
     public static void renderBackgroundTexture(MatrixStack matrix, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
-        EnchantmentsSeer.LOGGER.info("GuiUtils#renderBackgroundTexture");
         // render as much side as we can, based on element dimensions
         int sideWidth = Math.min(texSideWidth, width / 2);
         int sideHeight = Math.min(texSideHeight, height / 2);
@@ -101,9 +100,9 @@ public class GuiUtils {
         EnchantmentsSeerRenderer.bindTexture(resource);
 
         //Top Left Corner
-        AbstractGui.blit(matrix, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
         //Bottom Left Corner
-        AbstractGui.blit(matrix, left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
@@ -125,9 +124,9 @@ public class GuiUtils {
         }
 
         //Top Right Corner
-        AbstractGui.blit(matrix, rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
         //Bottom Right Corner
-        AbstractGui.blit(matrix, rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
+        GuiEnchantmentsSeer.blit(matrix, rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
     public static void blitTiled(MatrixStack matrix, int x, int y, int width, int height, int texX, int texY, int texDrawWidth, int texDrawHeight, int textureWidth, int textureHeight) {
@@ -136,7 +135,7 @@ public class GuiUtils {
         int drawWidth = width, drawHeight = height;
         for (int tileX = 0; tileX < xTiles; tileX++) {
             for (int tileY = 0; tileY < yTiles; tileY++) {
-                AbstractGui.blit(matrix, x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth), Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
+                GuiEnchantmentsSeer.blit(matrix, x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth), Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
                 drawHeight -= texDrawHeight;
             }
             drawWidth -= texDrawWidth;
@@ -154,7 +153,7 @@ public class GuiUtils {
     }
 
     public static void fill(MatrixStack matrix, int x, int y, int width, int height, int color) {
-        AbstractGui.fill(matrix, x, y, x + width, y + height, color);
+        GuiEnchantmentsSeer.fill(matrix, x, y, x + width, y + height, color);
     }
 
     public static void drawSprite(MatrixStack matrix, int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {

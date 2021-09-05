@@ -34,12 +34,10 @@ public class InventorySlotHelper {
     }
 
     public void addSlot(@Nonnull IInventorySlot slot) {
-        EnchantmentsSeer.LOGGER.info(String.format("Adding slot: %s", slot));
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof InventorySlotHolder) {
-            EnchantmentsSeer.LOGGER.info("Slot is instance of InventorySlotHolder");
             ((InventorySlotHolder) slotHolder).addSlot(slot);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add slots");
@@ -58,7 +56,6 @@ public class InventorySlotHelper {
     }
 
     public IInventorySlotHolder build() {
-        EnchantmentsSeer.LOGGER.info("Building inventory slot holder");
         built = true;
         return slotHolder;
     }

@@ -33,8 +33,10 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'official', version: '1.16.5'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // Allows access to otherwise-inaccessible fields/methods from the Minecraft code
+    // See https://mcforge.readthedocs.io/en/latest/advanced/accesstransformers/
+    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.

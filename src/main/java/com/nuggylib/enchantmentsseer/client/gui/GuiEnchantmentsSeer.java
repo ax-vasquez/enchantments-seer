@@ -3,6 +3,7 @@ package com.nuggylib.enchantmentsseer.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nuggylib.enchantmentsseer.client.gui.element.GuiElement;
+import com.nuggylib.enchantmentsseer.client.gui.element.slot.GuiVirtualSlot;
 import com.nuggylib.enchantmentsseer.client.gui.element.window.GuiWindow;
 import com.nuggylib.enchantmentsseer.client.render.EnchantmentsSeerRenderer;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
@@ -12,6 +13,7 @@ import com.nuggylib.enchantmentsseer.client.render.text.IFancyFontRenderer;
 import com.nuggylib.enchantmentsseer.common.inventory.container.EnchantmentsSeerContainer;
 import com.nuggylib.enchantmentsseer.common.inventory.container.SelectedWindowData;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.ContainerSlotType;
+import com.nuggylib.enchantmentsseer.common.inventory.container.slot.IVirtualSlot;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.InventoryContainerSlot;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.SlotOverlay;
 import com.nuggylib.enchantmentsseer.common.lib.collection.LRU;
@@ -56,7 +58,7 @@ import java.util.List;
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/client/gui/GuiMekanism.java"
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractGui<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
+public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
     public static final ResourceLocation BASE_BACKGROUND = EnchantmentsSeer.getResource(ResourceType.GUI, "base.png");
     public static final ResourceLocation SHADOW = EnchantmentsSeer.getResource(ResourceType.GUI, "shadow.png");
@@ -69,14 +71,12 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
 
     public static int maxZOffset;
 
-    public AbstractGui(CONTAINER container, PlayerInventory inventory, ITextComponent title) {
+    public GuiEnchantmentsSeer(CONTAINER container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
-        EnchantmentsSeer.LOGGER.info("AbstractGui#AbstractGui() (constructor)");
     }
 
     @Override
     public void init(@Nonnull Minecraft minecraft, int width, int height) {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#init()");
         //Mark that we are not switching to JEI if we start being initialized again
         switchingToJEI = false;
         //Note: We are forced to do the logic that normally would be inside the "resize" method
@@ -97,14 +97,10 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
         int prevLeft = leftPos, prevTop = topPos;
         super.init(minecraft, width, height);
 
-        EnchantmentsSeer.LOGGER.info("Adding child windows");
-        // TODO: Figure out how to make sure windows has values in it
         windows.forEach(window -> {
-            EnchantmentsSeer.LOGGER.info(String.format("Adding child window: %s", window));
             window.resize(prevLeft, prevTop, leftPos, topPos);
             children.add(window);
         });
-        EnchantmentsSeer.LOGGER.info("Finished adding child windows");
 
         prevElements.forEach(e -> {
             if (e.getLeft() < buttons.size()) {
@@ -130,7 +126,6 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
      */
     @Override
     protected void renderBg(MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#renderBg");
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         EnchantmentsSeerRenderer.resetColor();
@@ -155,7 +150,6 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
      */
     @Override
     public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#render");
         // shift back a whole lot so we can stack more windows
         RenderSystem.translated(0, 0, -500);
         matrix.pushPose();
@@ -170,24 +164,21 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
 
     @Override
     public FontRenderer getFont() {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#getFont");
         return font;
     }
 
     @Override
     public ItemRenderer getItemRenderer() {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#getItemRenderer");
         return itemRenderer;
     }
 
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#drawForegroundText");
     }
 
     protected void addSlots() {
-        EnchantmentsSeer.LOGGER.info("Adding slots from AbstractGui");
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
+            EnchantmentsSeer.LOGGER.info(String.format("Creating slot index: %s", i));
             Slot slot = menu.slots.get(i);
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
@@ -211,7 +202,6 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
     }
 
     protected ItemStack checkValidity(int slotIndex) {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#checkValidity(int)");
         return ItemStack.EMPTY;
     }
 
@@ -220,14 +210,12 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
      * elements can and should be added after the slots.
      */
     protected void addGuiElements() {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#addGuiElements");
         // TODO: See if the check that Mekanism had was necessary (they use a variable that appears to be defaulting to true, according to their comments)
         addSlots();
     }
 
     @Override
     public void tick() {
-        EnchantmentsSeer.LOGGER.info("AbstractGui#tick()");
         super.tick();
         children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
         windows.forEach(GuiWindow::tick);
@@ -295,4 +283,29 @@ public abstract class AbstractGui<CONTAINER extends Container> extends Container
         return windows.descendingIterator();
     }
 
+    @Override
+    protected boolean isMouseOverSlot(@Nonnull Slot slot, double mouseX, double mouseY) {
+        if (slot instanceof IVirtualSlot) {
+            //Virtual slots need special handling to allow for matching them to the window they may be attached to
+            IVirtualSlot virtualSlot = (IVirtualSlot) slot;
+            int xPos = virtualSlot.getActualX();
+            int yPos = virtualSlot.getActualY();
+            if (super.isHovering(xPos, yPos, 16, 16, mouseX, mouseY)) {
+                GuiWindow window = getWindowHovering(mouseX, mouseY);
+                //If we are hovering over a window, check if the virtual slot is a child of the window
+                if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot && ((GuiVirtualSlot) element).isElementForSlot(virtualSlot))) {
+                    return overNoButtons(window, mouseX, mouseY);
+                }
+            }
+            return false;
+        }
+        return isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY);
+    }
+
+    private boolean overNoButtons(@Nullable GuiWindow window, double mouseX, double mouseY) {
+        if (window == null) {
+            return buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
+        }
+        return !window.childrenContainsElement(e -> e.isMouseOver(mouseX, mouseY));
+    }
 }

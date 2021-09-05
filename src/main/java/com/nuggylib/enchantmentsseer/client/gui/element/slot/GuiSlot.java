@@ -5,6 +5,7 @@ import com.nuggylib.enchantmentsseer.client.gui.IGuiWrapper;
 import com.nuggylib.enchantmentsseer.client.gui.element.GuiTexturedElement;
 import com.nuggylib.enchantmentsseer.client.render.EnchantmentsSeerRenderer;
 import com.nuggylib.enchantmentsseer.client.render.text.EnumColor;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.SlotOverlay;
 import com.nuggylib.enchantmentsseer.client.jei.interfaces.IJEIGhostTarget;
 import net.minecraft.client.Minecraft;
@@ -47,6 +48,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
+        EnchantmentsSeer.LOGGER.info(String.format("Using texture: %s", type.getTexture()));
         this.slotType = type;
         active = false;
     }
