@@ -32,15 +32,15 @@ public abstract class CachedValue<T> {
             invalidationListeners = new HashSet<>();
         }
         if (!invalidationListeners.add(listener)) {
-            EnchantmentsSeer.LOGGER.warn("Duplicate invalidation listener added");
+            EnchantmentsSeer.logger.warn("Duplicate invalidation listener added");
         }
     }
 
     public void removeInvalidationListener(IConfigValueInvalidationListener listener) {
         if (invalidationListeners == null) {
-            EnchantmentsSeer.LOGGER.warn("Unable to remove specified invalidation listener, no invalidation listeners have been added.");
+            EnchantmentsSeer.logger.warn("Unable to remove specified invalidation listener, no invalidation listeners have been added.");
         } else if (!invalidationListeners.remove(listener)) {
-            EnchantmentsSeer.LOGGER.warn("Unable to remove specified invalidation listener.");
+            EnchantmentsSeer.logger.warn("Unable to remove specified invalidation listener.");
         }
     }
 

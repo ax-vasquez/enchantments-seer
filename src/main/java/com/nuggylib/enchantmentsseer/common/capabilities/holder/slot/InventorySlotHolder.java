@@ -19,8 +19,6 @@ import java.util.function.Supplier;
  */
 public class InventorySlotHolder extends BasicHolder<IInventorySlot> implements IInventorySlotHolder {
 
-    private final String LOG_CLASS_PREFIX = InventorySlotHolder.class.getSimpleName();
-
     @Nullable
     private final Predicate<RelativeSide> insertPredicate;
     @Nullable

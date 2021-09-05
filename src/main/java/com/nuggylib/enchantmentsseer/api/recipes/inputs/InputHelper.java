@@ -77,7 +77,7 @@ public class InputHelper {
 
     private static void logMismatchedStackSize(long actual, long expected) {
         if (expected != actual) {
-            EnchantmentsSeer.LOGGER.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected, new Exception());
+            EnchantmentsSeer.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected, new Exception());
         }
     }
 }

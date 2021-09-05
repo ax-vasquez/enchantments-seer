@@ -257,7 +257,7 @@ public class WorldUtils {
         if (clazz.isInstance(tile)) {
             return clazz.cast(tile);
         } else if (logWrongType) {
-            EnchantmentsSeer.LOGGER.warn("Unexpected TileEntity class at {}, expected {}, but found: {}", pos, clazz, tile.getClass());
+            EnchantmentsSeer.logger.warn("Unexpected TileEntity class at {}, expected {}, but found: {}", pos, clazz, tile.getClass());
         }
         return null;
     }

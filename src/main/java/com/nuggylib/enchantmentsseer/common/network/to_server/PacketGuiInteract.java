@@ -115,7 +115,7 @@ public class PacketGuiInteract implements IEnchantmentsSeerPacket {
         } else if (type == Type.ITEM) {
             return new PacketGuiInteract(buffer.readEnum(GuiInteractionItem.class), buffer.readBlockPos(), buffer.readItem());
         }
-        EnchantmentsSeer.LOGGER.error("Received malformed GUI interaction packet.");
+        EnchantmentsSeer.logger.error("Received malformed GUI interaction packet.");
         return null;
     }
 

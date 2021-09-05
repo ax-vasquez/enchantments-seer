@@ -292,7 +292,7 @@ public class GuiUtils {
                 RenderSystem.disableDepthTest();
                 matrix.popPose();
             } catch (Exception e) {
-                EnchantmentsSeer.LOGGER.error("Failed to render stack into gui: {}", stack, e);
+                EnchantmentsSeer.logger.error("Failed to render stack into gui: {}", stack, e);
             }
         }
     }

@@ -20,8 +20,6 @@ import com.nuggylib.enchantmentsseer.common.lib.collection.LRU;
 import com.nuggylib.enchantmentsseer.common.util.EnchantmentsSeerUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -29,7 +27,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -64,6 +61,12 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
     public static final ResourceLocation SHADOW = EnchantmentsSeer.getResource(ResourceType.GUI, "shadow.png");
     public static final ResourceLocation BLUR = EnchantmentsSeer.getResource(ResourceType.GUI, "blur.png");
 
+    /**
+     * Mekanism has a "to-do" considering defaulting this to true - it's unclear what this is for, but it appears to be
+     * important and should be set to true in most cases.
+     */
+    protected boolean dynamicSlots;
+
     // TODO: It appears we need to add windows to the LRU for the corresponding GUI; I checked the logs and it seems the children field is never populated
     protected final LRU<GuiWindow> windows = new LRU<>();
     protected final List<GuiElement> focusListeners = new ArrayList<>();
@@ -73,47 +76,13 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
 
     public GuiEnchantmentsSeer(CONTAINER container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
+        EnchantmentsSeer.logger.info("GuiEnchantmentsSeer#constructor");
     }
 
     @Override
     public void init(@Nonnull Minecraft minecraft, int width, int height) {
-        //Mark that we are not switching to JEI if we start being initialized again
-        switchingToJEI = false;
-        //Note: We are forced to do the logic that normally would be inside the "resize" method
-        // here in init, as when mods like JEI take over the screen to show recipes, and then
-        // return the screen to the "state" it was beforehand it does not actually properly
-        // transfer the state from the previous instance to the new instance. If we run the
-        // code we normally would run for when things get resized, we then are able to
-        // properly reinstate/transfer the states of the various elements
-        List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
-        for (int i = 0; i < buttons.size(); i++) {
-            Widget widget = buttons.get(i);
-            if (widget instanceof GuiElement && ((GuiElement) widget).hasPersistentData()) {
-                prevElements.add(Pair.of(i, (GuiElement) widget));
-            }
-        }
-        // flush the focus listeners list unless it's an overlay
-        focusListeners.removeIf(element -> !element.isOverlay);
-        int prevLeft = leftPos, prevTop = topPos;
         super.init(minecraft, width, height);
-
-        windows.forEach(window -> {
-            window.resize(prevLeft, prevTop, leftPos, topPos);
-            children.add(window);
-        });
-
-        prevElements.forEach(e -> {
-            if (e.getLeft() < buttons.size()) {
-                Widget widget = buttons.get(e.getLeft());
-                // we're forced to assume that the children list is the same before and after the resize.
-                // for verification, we run a lightweight class equality check
-                // Note: We do not perform an instance check on widget to ensure it is a GuiElement, as that is
-                // ensured by the class comparison, and the restrictions of what can go in prevElements
-                if (widget.getClass() == e.getRight().getClass()) {
-                    ((GuiElement) widget).syncFrom(e.getRight());
-                }
-            }
-        });
+        addGuiElements();
     }
 
     // TODO: Fix the textures - we just need the assets to use when rendering the base GUI
@@ -130,7 +99,7 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
         // it in an unexpected state.
         EnchantmentsSeerRenderer.resetColor();
         if (width < 8 || height < 8) {
-            EnchantmentsSeer.LOGGER.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
+            EnchantmentsSeer.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
         GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, leftPos, topPos, imageWidth, imageHeight, 256, 256);
@@ -153,6 +122,7 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
         // shift back a whole lot so we can stack more windows
         RenderSystem.translated(0, 0, -500);
         matrix.pushPose();
+        EnchantmentsSeer.logger.info(String.format("Matrix stack: %s", matrix));
         renderBackground(matrix);
         //Apply our matrix stack to the render system and pass an unmodified one to the super method
         // Vanilla still renders the items into the GUI using render system transformations so this
@@ -178,7 +148,7 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
     protected void addSlots() {
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
-            EnchantmentsSeer.LOGGER.info(String.format("Creating slot index: %s", i));
+            EnchantmentsSeer.logger.info(String.format("Creating slot index: %s", i));
             Slot slot = menu.slots.get(i);
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
@@ -210,8 +180,9 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
      * elements can and should be added after the slots.
      */
     protected void addGuiElements() {
-        // TODO: See if the check that Mekanism had was necessary (they use a variable that appears to be defaulting to true, according to their comments)
-        addSlots();
+        if (dynamicSlots) {
+            addSlots();
+        }
     }
 
     @Override

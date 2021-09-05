@@ -36,7 +36,7 @@ public class PacketUpdateTile implements IEnchantmentsSeerPacket {
         if (world != null) {
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos, true);
             if (tile == null) {
-                EnchantmentsSeer.LOGGER.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
+                EnchantmentsSeer.logger.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
                         world.dimension().location());
             } else {
                 tile.handleUpdatePacket(updateTag);

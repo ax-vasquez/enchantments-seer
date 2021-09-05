@@ -43,7 +43,7 @@ public class ColorAtlas {
     public void parse(ResourceLocation rl) {
         List<Color> parsed = load(rl, colors.size());
         if (parsed.size() < colors.size()) {
-            EnchantmentsSeer.LOGGER.error("Failed to parse '{}' color atlas.", name);
+            EnchantmentsSeer.logger.error("Failed to parse '{}' color atlas.", name);
             return;
         }
         for (int i = 0; i < parsed.size(); i++) {
@@ -56,7 +56,7 @@ public class ColorAtlas {
         try {
             loadColorAtlas(rl, count, ret);
         } catch (Exception e) {
-            EnchantmentsSeer.LOGGER.error("Failed to load color atlas: {}", rl, e);
+            EnchantmentsSeer.logger.error("Failed to load color atlas: {}", rl, e);
         }
         return ret;
     }
@@ -70,7 +70,7 @@ public class ColorAtlas {
                 //Don't allow fully transparent colors, fallback to default color.
                 // Mark as null for now so that it can default to the proper color
                 ret.add(null);
-                EnchantmentsSeer.LOGGER.warn("Unable to retrieve color marker: '{}' for atlas: '{}'. This is likely due to an out of date resource pack.", count, rl);
+                EnchantmentsSeer.logger.warn("Unable to retrieve color marker: '{}' for atlas: '{}'. This is likely due to an out of date resource pack.", count, rl);
             } else {
                 ret.add(Color.argb(rgb));
             }
