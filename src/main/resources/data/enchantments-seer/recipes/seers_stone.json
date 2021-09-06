@@ -1,19 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "GGG",
-    "GPG",
-    "GGR"
+    "SSS",
+    "SSS",
+    "SSS"
   ],
   "key": {
-    "R": {
-      "item": "minecraft:redstone"
-    },
-    "G": {
-      "item": "minecraft:gold_nugget"
-    },
-    "P": {
-      "item": "minecraft:ender_pearl"
+    "S": {
+      "item": "enchantments-seer:seers_stone_u"
     }
   },
   "result": {
