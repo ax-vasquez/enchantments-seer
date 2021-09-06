@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GSG",
+    "PPP",
+    "GGG"
+  ],
+  "key": {
+    "S": {
+      "item": "enchantments-seer:seers_stone"
+    },
+    "P": {
+      "item": "enchantments-seer:seers_enchanted_page"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "item": "enchantments-seer:seers_manuscript"
+  }
+}

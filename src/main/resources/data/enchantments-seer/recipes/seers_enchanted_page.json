@@ -6,6 +6,7 @@
     }
   ],
   "result": {
-    "item": "enchantments-seer:enchanted_page"
+    "item": "enchantments-seer:seers_enchanted_page",
+    "count": 3
   }
 }
