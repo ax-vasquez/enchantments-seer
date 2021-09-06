@@ -195,4 +195,8 @@ public class EnchantmentsSeerRenderer {
         }
     }
 
+    public static float getPartialTick() {
+        return Minecraft.getInstance().getFrameTime();
+    }
+
 }
