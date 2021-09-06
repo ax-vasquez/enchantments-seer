@@ -48,7 +48,6 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
-        EnchantmentsSeer.logger.info(String.format("Constructing GuiSlot with texture: %s", type.getTexture()));
         this.slotType = type;
         active = false;
     }

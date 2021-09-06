@@ -24,19 +24,16 @@ public class GuiSeersEnchantingTable extends GuiEnchantmentsSeerTile<TileEntityS
     public GuiSeersEnchantingTable(EnchantmentsSeerTileContainer<TileEntitySeersEnchantmentTable> container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
         dynamicSlots = true;
-        EnchantmentsSeer.logger.info("GuiSeersEnchantingTable#constructor");
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        EnchantmentsSeer.logger.info(String.format("GuiSeersEnchantingTable#addGuiElements: %s", tile.getName()));
         addButton(new GuiSlot(SlotType.INPUT, this, 145, 20));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        EnchantmentsSeer.logger.info(String.format("GuiSeersEnchantingTable#drawForegroundText: %s", tile.getName()));
         renderTitleText(matrix);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
