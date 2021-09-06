@@ -82,7 +82,6 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
 
     public GuiEnchantmentsSeer(CONTAINER container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
-        EnchantmentsSeer.logger.info("GuiEnchantmentsSeer#constructor");
     }
 
     @Override
@@ -123,7 +122,6 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
         // shift back a whole lot so we can stack more windows
         RenderSystem.translated(0, 0, -500);
         matrix.pushPose();
-        EnchantmentsSeer.logger.info(String.format("Matrix stack: %s", matrix));
         renderBackground(matrix);
         //Apply our matrix stack to the render system and pass an unmodified one to the super method
         // Vanilla still renders the items into the GUI using render system transformations so this
@@ -149,7 +147,6 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
     protected void addSlots() {
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
-            EnchantmentsSeer.logger.info(String.format("Creating slot index: %s", i));
             Slot slot = menu.slots.get(i);
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
