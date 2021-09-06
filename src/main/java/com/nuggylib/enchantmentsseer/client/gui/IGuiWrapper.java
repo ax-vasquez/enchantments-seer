@@ -71,11 +71,11 @@ public interface IGuiWrapper {
     }
 
     default void addWindow(GuiWindow window) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'addWindow' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'addWindow' but unsupported in {}", getClass().getName());
     }
 
     default void removeWindow(GuiWindow window) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'removeWindow' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'removeWindow' but unsupported in {}", getClass().getName());
     }
 
     default boolean currentlyQuickCrafting() {
@@ -84,7 +84,7 @@ public interface IGuiWrapper {
 
     @Nullable
     default GuiWindow getWindowHovering(double mouseX, double mouseY) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'getWindowHovering' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'getWindowHovering' but unsupported in {}", getClass().getName());
         return null;
     }
 
@@ -102,14 +102,14 @@ public interface IGuiWrapper {
     ItemRenderer getItemRenderer();
 
     default void renderItemTooltip(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
     }
 
     default void renderItemTooltipWithExtra(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<ITextComponent> toAppend) {
         if (toAppend.isEmpty()) {
             renderItemTooltip(matrix, stack, xAxis, yAxis);
         } else {
-            EnchantmentsSeer.LOGGER.error("Tried to call 'renderItemTooltipWithExtra' but unsupported in {}", getClass().getName());
+            EnchantmentsSeer.logger.error("Tried to call 'renderItemTooltipWithExtra' but unsupported in {}", getClass().getName());
         }
     }
 
@@ -118,22 +118,22 @@ public interface IGuiWrapper {
     }
 
     default void setSelectedWindow(SelectedWindowData selectedWindow) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'setSelectedWindow' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'setSelectedWindow' but unsupported in {}", getClass().getName());
     }
 
     default void addFocusListener(GuiElement element) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'addFocusListener' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'addFocusListener' but unsupported in {}", getClass().getName());
     }
 
     default void removeFocusListener(GuiElement element) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'removeFocusListener' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'removeFocusListener' but unsupported in {}", getClass().getName());
     }
 
     default void focusChange(GuiElement changed) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'focusChange' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'focusChange' but unsupported in {}", getClass().getName());
     }
 
     default void incrementFocus(GuiElement current) {
-        EnchantmentsSeer.LOGGER.error("Tried to call 'incrementFocus' but unsupported in {}", getClass().getName());
+        EnchantmentsSeer.logger.error("Tried to call 'incrementFocus' but unsupported in {}", getClass().getName());
     }
 }

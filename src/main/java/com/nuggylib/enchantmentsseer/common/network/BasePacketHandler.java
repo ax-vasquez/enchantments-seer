@@ -67,7 +67,7 @@ public abstract class BasePacketHandler {
     public static void log(String logFormat, Object... params) {
         //TODO: Add more logging for packets using this
         if (EnchantmentsSeerConfig.general.logPackets.get()) {
-            EnchantmentsSeer.LOGGER.info(logFormat, params);
+            EnchantmentsSeer.logger.info(logFormat, params);
         }
     }
 

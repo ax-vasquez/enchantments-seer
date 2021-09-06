@@ -1,6 +1,20 @@
 package com.nuggylib.enchantmentsseer.common.util;
 
+import com.mojang.authlib.GameProfile;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
+import net.minecraftforge.common.UsernameCache;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class EnchantmentsSeerUtils {
+
+    private static final List<UUID> warnedFails = new ArrayList<>();
 
     /**
      * Copied from the Mekanism codebase; all credit goes to them
@@ -34,6 +48,25 @@ public class EnchantmentsSeerUtils {
         public String getPrefix() {
             return prefix + "/";
         }
+    }
+
+    @Nonnull
+    public static String getLastKnownUsername(@Nullable UUID uuid) {
+        if (uuid == null) {
+            return "<???>";
+        }
+        String ret = UsernameCache.getLastKnownUsername(uuid);
+        if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
+            GameProfile gp = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
+            if (gp != null) {
+                ret = gp.getName();
+            }
+        }
+        if (ret == null && !warnedFails.contains(uuid)) {
+            EnchantmentsSeer.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
+            warnedFails.add(uuid);
+        }
+        return ret != null ? ret : "<" + uuid + ">";
     }
 
 }

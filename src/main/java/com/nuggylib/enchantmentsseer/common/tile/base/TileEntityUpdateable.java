@@ -131,9 +131,9 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
 
     public void sendUpdatePacket(TileEntity tracking) {
         if (isRemote()) {
-            EnchantmentsSeer.LOGGER.warn("Update packet call requested from client side", new IllegalStateException());
+            EnchantmentsSeer.logger.warn("Update packet call requested from client side", new IllegalStateException());
         } else if (isRemoved()) {
-            EnchantmentsSeer.LOGGER.warn("Update packet call requested for removed tile", new IllegalStateException());
+            EnchantmentsSeer.logger.warn("Update packet call requested for removed tile", new IllegalStateException());
         } else {
             //Note: We use our own update packet/channel to avoid chunk trashing and minecraft attempting to rerender
             // the entire chunk when most often we are just updating a TileEntityRenderer, so the chunk itself

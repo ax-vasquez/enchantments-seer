@@ -22,6 +22,7 @@ public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantment
 
     protected GuiEnchantmentsSeerTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        EnchantmentsSeer.logger.info("GuiEnchantmentsSeerTile#constructor");
         tile = container.getTileEntity();
     }
 
@@ -38,7 +39,7 @@ public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantment
     protected void addGenericTabs() {}
 
     public void renderTitleText(MatrixStack matrix) {
-        EnchantmentsSeer.LOGGER.info(String.format("GuiEnchantmentsSeerTile#renderTitleText: %s", tile.getName()));
+        EnchantmentsSeer.logger.info(String.format("GuiEnchantmentsSeerTile#renderTitleText: %s", tile.getName()));
         drawTitleText(matrix, tile.getName(), titleLabelY);
     }
 
@@ -46,4 +47,5 @@ public abstract class GuiEnchantmentsSeerTile<TILE extends TileEntityEnchantment
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
+
 }

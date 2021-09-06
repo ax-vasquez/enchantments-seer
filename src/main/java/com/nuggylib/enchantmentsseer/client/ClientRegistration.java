@@ -31,6 +31,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+
         ClientRegistrationUtil.registerScreen(EnchantmentsSeerContainerTypes.SEERS_ENCHANTING_TABLE, GuiSeersEnchantingTable::new);
     }
 

@@ -6,6 +6,11 @@ import com.nuggylib.enchantmentsseer.client.render.text.IFancyFontRenderer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+/**
+ * Shamelessly-copied from the Mekanism codebase; all credit goes to them
+ *
+ * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/client/gui/element/GuiRelativeElement.java"
+ */
 public abstract class GuiRelativeElement extends GuiElement implements IFancyFontRenderer {
 
     protected int relativeX;

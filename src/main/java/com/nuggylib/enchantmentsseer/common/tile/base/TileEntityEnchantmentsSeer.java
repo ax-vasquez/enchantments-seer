@@ -30,7 +30,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -131,9 +130,9 @@ public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity im
                 return ActionResultType.SUCCESS;
             }
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            EnchantmentsSeer.LOGGER.error(String.format("Failed to open GUI. There is a problem with the container and/or gui slot configuration for: %s", blockProvider.getBlock().getRegistryName()));
+            EnchantmentsSeer.logger.error(String.format("Failed to open GUI. There is a problem with the container and/or gui slot configuration for: %s", blockProvider.getBlock().getRegistryName()));
         } catch (Exception e) {
-            EnchantmentsSeer.LOGGER.error(String.format("Failed to open menu. Error: %s", e));
+            EnchantmentsSeer.logger.error(String.format("Failed to open menu. Error: %s", e));
         }
 
         return ActionResultType.PASS;
@@ -225,7 +224,7 @@ public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity im
             } else if (!getType().isValid(state.getBlock())) {
                 //This is probably always true if we couldn't get the direction it is facing
                 // but double check just in case before logging
-                EnchantmentsSeer.LOGGER.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
+                EnchantmentsSeer.logger.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
                         + "things will probably not work correctly. This is almost certainly due to another mod incorrectly "
                         + "trying to move this tile and not properly updating the position.", getType().getRegistryName(), worldPosition, level);
             }

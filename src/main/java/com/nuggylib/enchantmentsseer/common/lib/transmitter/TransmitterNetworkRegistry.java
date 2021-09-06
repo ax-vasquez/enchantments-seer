@@ -6,11 +6,8 @@ import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.content.network.transmitter.BufferedTransmitter;
 import com.nuggylib.enchantmentsseer.common.content.network.transmitter.DynamicNetwork;
 import com.nuggylib.enchantmentsseer.common.content.network.transmitter.Transmitter;
-import com.nuggylib.enchantmentsseer.common.util.EnumUtils;
-import com.nuggylib.enchantmentsseer.common.util.WorldUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -79,7 +76,7 @@ public class TransmitterNetworkRegistry {
         Coord4D coord = transmitter.getTileCoord();
         Transmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
         if (previous != null && previous != transmitter) {
-            EnchantmentsSeer.LOGGER.error("Different orphan transmitter was already registered at location! {}", coord);
+            EnchantmentsSeer.logger.error("Different orphan transmitter was already registered at location! {}", coord);
         }
     }
 
@@ -114,7 +111,7 @@ public class TransmitterNetworkRegistry {
 
     private void removeInvalidTransmitters() {
         if (EnchantmentsSeerAPI.debug && !invalidTransmitters.isEmpty()) {
-            EnchantmentsSeer.LOGGER.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
+            EnchantmentsSeer.logger.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
         }
         for (Transmitter<?, ?, ?> invalid : invalidTransmitters) {
             removeInvalidTransmitter(invalid);
@@ -137,7 +134,7 @@ public class TransmitterNetworkRegistry {
         newOrphanTransmitters.clear();
 
         if (EnchantmentsSeerAPI.debug && !orphanTransmitters.isEmpty()) {
-            EnchantmentsSeer.LOGGER.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
+            EnchantmentsSeer.logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
         }
 
         for (Transmitter<?, ?, ?> orphanTransmitter : orphanTransmitters.values()) {
@@ -164,19 +161,19 @@ public class TransmitterNetworkRegistry {
         switch (finder.networksFound.size()) {
             case 0:
                 if (EnchantmentsSeerAPI.debug) {
-                    EnchantmentsSeer.LOGGER.info("No networks found. Creating new network for {} transmitters", finder.connectedTransmitters.size());
+                    EnchantmentsSeer.logger.info("No networks found. Creating new network for {} transmitters", finder.connectedTransmitters.size());
                 }
                 network = finder.createEmptyNetwork();
                 break;
             case 1:
                 if (EnchantmentsSeerAPI.debug) {
-                    EnchantmentsSeer.LOGGER.info("Adding {} transmitters to single found network", finder.connectedTransmitters.size());
+                    EnchantmentsSeer.logger.info("Adding {} transmitters to single found network", finder.connectedTransmitters.size());
                 }
                 network = finder.networksFound.iterator().next();
                 break;
             default:
                 if (EnchantmentsSeerAPI.debug) {
-                    EnchantmentsSeer.LOGGER.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
+                    EnchantmentsSeer.logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
                 }
                 network = finder.createNetworkByMerging();
         }
@@ -223,7 +220,7 @@ public class TransmitterNetworkRegistry {
 
         public void start() {
             if (queue.peek() != null) {
-                EnchantmentsSeer.LOGGER.error("OrphanPathFinder queue was not empty?!");
+                EnchantmentsSeer.logger.error("OrphanPathFinder queue was not empty?!");
                 queue.clear();
             }
             queue.push(startPoint.getTilePos());
