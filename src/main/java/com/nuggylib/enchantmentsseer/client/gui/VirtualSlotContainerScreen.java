@@ -138,7 +138,6 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
         InputMappings.Input mouseKey = InputMappings.Type.MOUSE.getOrCreate(button);
         boolean pickBlockButton = minecraft.options.keyPickItem.isActiveAndMatches(mouseKey);
         long time = Util.getMillis();
-        EnchantmentsSeer.logger.info("Slot clicked!");
         this.doubleclick = this.lastClickSlot == slot && time - this.lastClickTime < 250L && this.lastClickButton == button;
         this.skipNextRelease = false;
         if (button != 0 && button != 1 && !pickBlockButton) {

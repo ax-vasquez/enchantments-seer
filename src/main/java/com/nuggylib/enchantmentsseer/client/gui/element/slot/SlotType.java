@@ -23,7 +23,6 @@ public enum SlotType {
 
     SlotType(String texture, int width, int height) {
         this.texture = EnchantmentsSeer.getResource(ResourceType.GUI_SLOT, texture);
-        EnchantmentsSeer.logger.info(String.format("Slot texture: %s", texture));
         this.width = width;
         this.height = height;
     }
