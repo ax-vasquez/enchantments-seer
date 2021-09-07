@@ -3,7 +3,6 @@ package com.nuggylib.enchantmentsseer.common.tile.block;
 import com.nuggylib.enchantmentsseer.api.annotations.NonNull;
 import com.nuggylib.enchantmentsseer.api.recipes.inputs.IInputHandler;
 import com.nuggylib.enchantmentsseer.api.recipes.inputs.InputHelper;
-import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.IInventorySlotHolder;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.InventorySlotHelper;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.InputInventorySlot;
@@ -29,9 +28,10 @@ import java.util.Random;
  */
 public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer implements ITickableTileEntity {
 
-    protected final IInputHandler<@NonNull ItemStack> inputHandler;
+    protected final IInputHandler<@NonNull ItemStack> enchantItemHelper;
+    protected final IInputHandler<@NonNull ItemStack> reagentItemHelper;
     private InputInventorySlot inputSlot;
-    private InputInventorySlot outputSlot;
+    private InputInventorySlot reagentSlot;
 
     public int time;
     public float flip;
@@ -54,15 +54,17 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
         // Setup up the tile configuration component
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
         // Ensures the slots are defined before trying to use them
-        configComponent.setupItemIOConfig(inputSlot, outputSlot);
-        inputHandler = InputHelper.getInputHandler(inputSlot);
+        configComponent.setupItemIOConfig(inputSlot, reagentSlot);
+        enchantItemHelper = InputHelper.getInputHandler(inputSlot);
+        reagentItemHelper = InputHelper.getInputHandler(reagentSlot);
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = InputInventorySlot.at(null, 15, 29));
+        builder.addSlot(inputSlot = InputInventorySlot.at(null, 15, 47));
+        builder.addSlot(reagentSlot = InputInventorySlot.at(null, 35, 47));
         return builder.build();
     }
 

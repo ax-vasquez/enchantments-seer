@@ -233,12 +233,6 @@ public abstract class EnchantmentsSeerContainer extends Container {
         return newStack;
     }
 
-    @Nonnull
-    @Override
-    protected IntReferenceHolder addDataSlot(@Nonnull IntReferenceHolder referenceHolder) {
-        return referenceHolder;
-    }
-
     /**
      * @apiNote Only call on client
      */
