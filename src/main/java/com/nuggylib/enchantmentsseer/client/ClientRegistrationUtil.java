@@ -1,7 +1,10 @@
 package com.nuggylib.enchantmentsseer.client;
 
+import com.nuggylib.enchantmentsseer.common.registration.INamedEntry;
+import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeDeferredRegister.ContainerBuilder;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeRegistryObject;
 import com.nuggylib.enchantmentsseer.common.registration.impl.TileEntityTypeRegistryObject;
+import com.nuggylib.enchantmentsseer.common.tile.base.TileEntityEnchantmentsSeer;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
