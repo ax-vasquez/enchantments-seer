@@ -10,6 +10,7 @@ import com.nuggylib.enchantmentsseer.common.inventory.container.sync.ISyncableDa
 import com.nuggylib.enchantmentsseer.common.inventory.container.sync.ISyncableData.DirtyType;
 import com.nuggylib.enchantmentsseer.common.inventory.container.sync.SyncableInt;
 import com.nuggylib.enchantmentsseer.common.inventory.container.sync.SyncableItemStack;
+import com.nuggylib.enchantmentsseer.common.network.to_client.container.PacketUpdateContainer;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeRegistryObject;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.InventoryContainerSlot;
 import com.nuggylib.enchantmentsseer.common.util.StackUtils;
@@ -222,6 +223,44 @@ public abstract class EnchantmentsSeerContainer extends Container {
     @Override
     public void broadcastChanges() {
         // TODO: See if we should do more here other than simply overriding the super class' method
+        if (!containerListeners.isEmpty()) {
+            //Only check tracked data for changes if we actually have any listeners
+            List<PropertyData> dirtyData = new ArrayList<>();
+            for (short i = 0; i < trackedData.size(); i++) {
+                ISyncableData data = trackedData.get(i);
+                DirtyType dirtyType = data.isDirty();
+                if (dirtyType != DirtyType.CLEAN) {
+                    dirtyData.add(data.getPropertyData(i, dirtyType));
+                }
+            }
+            if (!dirtyData.isEmpty()) {
+                sendChange(new PacketUpdateContainer((short) containerId, dirtyData));
+            }
+        }
+    }
+
+    private <MSG> void sendChange(MSG packet) {
+        for (IContainerListener listener : containerListeners) {
+            if (listener instanceof ServerPlayerEntity) {
+                EnchantmentsSeer.packetHandler.sendTo(packet, (ServerPlayerEntity) listener);
+            }
+        }
+    }
+
+    @Override
+    public void addSlotListener(@Nonnull IContainerListener listener) {
+        boolean alreadyHas = containerListeners.contains(listener);
+        super.addSlotListener(listener);
+        if (!alreadyHas && listener instanceof ServerPlayerEntity) {
+            //Send all contents to the listener when it first gets added
+            List<PropertyData> dirtyData = new ArrayList<>();
+            for (short i = 0; i < trackedData.size(); i++) {
+                dirtyData.add(trackedData.get(i).getPropertyData(i, DirtyType.DIRTY));
+            }
+            if (!dirtyData.isEmpty()) {
+                EnchantmentsSeer.packetHandler.sendTo(new PacketUpdateContainer((short) containerId, dirtyData), (ServerPlayerEntity) listener);
+            }
+        }
     }
 
     @Nonnull
@@ -290,6 +329,63 @@ public abstract class EnchantmentsSeerContainer extends Container {
         } else if (data instanceof SyncableItemStack) {
             ((SyncableItemStack) data).set(value);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return The contents in this slot AFTER transferring items away.
+     */
+    @Nonnull
+    @Override
+    public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotID) {
+        EnchantmentsSeer.logger.info("Quick move stack");
+        Slot currentSlot = slots.get(slotID);
+        if (currentSlot == null || !currentSlot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
+        SelectedWindowData selectedWindow = player.level.isClientSide ? getSelectedWindow() : getSelectedWindow(player.getUUID());
+        if (currentSlot instanceof IInsertableSlot && !((IInsertableSlot) currentSlot).exists(selectedWindow)) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack slotStack = currentSlot.getItem();
+        ItemStack stackToInsert = slotStack;
+        if (currentSlot instanceof InventoryContainerSlot) {
+            //Insert into stacks that already contain an item in the order hot bar -> main inventory
+            stackToInsert = insertItem(hotBarSlots, stackToInsert, true, selectedWindow);
+            stackToInsert = insertItem(mainInventorySlots, stackToInsert, true, selectedWindow);
+            //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
+            // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
+            // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
+            stackToInsert = insertItem(hotBarSlots, stackToInsert, false, selectedWindow);
+            stackToInsert = insertItem(mainInventorySlots, stackToInsert, false, selectedWindow);
+        } else {
+            //We are in the main inventory or the hot bar
+            //Start by trying to insert it into the tile's inventory slots, first attempting to stack with other items
+            stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, true, selectedWindow);
+            if (slotStack.getCount() == stackToInsert.getCount()) {
+                //Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
+                stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false, selectedWindow);
+                if (slotStack.getCount() == stackToInsert.getCount()) {
+                    //Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending which one we currently are in
+                    if (currentSlot instanceof MainInventorySlot) {
+                        stackToInsert = insertItem(hotBarSlots, stackToInsert, true, selectedWindow);
+                        stackToInsert = insertItem(hotBarSlots, stackToInsert, false, selectedWindow);
+                    } else if (currentSlot instanceof HotBarSlot) {
+                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, true, selectedWindow);
+                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, false, selectedWindow);
+                    } else {
+                        //TODO: Should we add a warning message so we can find out if we ever end up here. (Given we should never end up here anyways)
+                    }
+                }
+            }
+        }
+        if (stackToInsert.getCount() == slotStack.getCount()) {
+            //If nothing changed then return that fact
+            return ItemStack.EMPTY;
+        }
+        //Otherwise decrease the stack by the amount we inserted, and return it as a new stack for what is now in the slot
+        return transferSuccess(currentSlot, player, slotStack, stackToInsert);
     }
 
     public interface ISpecificContainerTracker {

@@ -58,11 +58,11 @@ public class SeersEnchantingTableContainer extends EnchantmentsSeerTileContainer
     }
 
     public void slotsChanged(IInventory inventory) {
+        EnchantmentsSeer.logger.info("Slots changed!");
         if (inventory == this.enchantSlots) {
             ItemStack itemToEnchant = inventory.getItem(0);
             if (!itemToEnchant.isEmpty() && itemToEnchant.isEnchantable()) {
                 this.access.execute((p_217002_2_, p_217002_3_) -> {
-
 
                     List<EnchantmentData> list = this.getEnchantmentList(itemToEnchant);
                     if (list != null && !list.isEmpty()) {
