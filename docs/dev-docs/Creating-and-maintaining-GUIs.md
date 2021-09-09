@@ -10,17 +10,19 @@ working with GUIs much easier.
 **The base GUI class doesn't have slots added directly to it.** While it seems possible to add them, doing so will bypass
 the container-related logic, which is presumably required in order for the contents to persist.
 
-## The Container class
+### Ideal modifications
+As mentioned before, you don't add slots to your GUI manually - that is handled automatically, assuming you added the 
+appropriate slots to the TileEntity class, registered the entity class, and registered a container for the TileEntity
+class (either through a subclass of `EnchantmentsSeerTileContainer`, which should be an uncommon use case, or by leveraging generics).
 
-### Container slots
+**"Non-slot" GUI elements are the ideal modifications to make in a GUI class, such as buttons.**
 
 ## The TileEntity class
 The TileEntity class _must_ have the appropriate slots (and they must be initialized). If you add the slots without initializing
 them in the TileEntity's `getInitialInventory` method, the game will crash if you attempt to open the linked GUI.
 
-**The TileEntity should be seen as the "source of truth" for the slot definitions.** When a block needs to store things,
-it needs to have a corresponding TileEntity class that possesses an inventory. _This inventory controls how the GUI
-will look in the end_.
+**The TileEntity should be seen as the "source of truth" for slot definitions, OTHER THAN the inventory and hot bar
+slots.**
 
 ### TileEntity Slots
 **Slots in the TileEntity class are not responsible for saving the contents; if you only implement a slot in a TileEntity,
@@ -42,9 +44,17 @@ If you were to put the following in your TileEntity's `getInitialInventory` meth
         return builder.build();
     }
 ```
+* Although the TileEntity class technically isn't part of the GUI, the `x` and `y` values passed to the slots control where
+ they are placed in the GUI when it's rendered
 
+### Persistent item storage
+> At the time of writing this document, I'm facing a bug where items are deleted from the game entirely if you leave
+> it in the enchanting table and walk away. I would like to make it so that both the item to be enchanted and the 
+> reagent slots can retain their item stacks. This section will cover how to do that.
 
-## Helper info
-1. `*ContainerSlot`
-2. `*InventorySlot` - use the `at` method in the corresponding `*InventorySlot` class in the _TileEntity_
-3. 
+## The Container class
+**You don't usually need an explicit container class in our mod.** This is only because we have logic in place to 
+dynamically-construct the containers for TileEntity classes as-needed, using generics.
+
+With that said, there may still be some use cases in which we will need to subclass the `EnchantmentsSeerTileContainer`
+in the future.
