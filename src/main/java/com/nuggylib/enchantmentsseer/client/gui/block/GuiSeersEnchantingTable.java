@@ -1,34 +1,17 @@
 package com.nuggylib.enchantmentsseer.client.gui.block;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.nuggylib.enchantmentsseer.client.gui.GuiEnchantmentsSeerTile;
-import com.nuggylib.enchantmentsseer.client.gui.element.slot.GuiSlot;
-import com.nuggylib.enchantmentsseer.client.gui.element.slot.SlotType;
-import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.inventory.container.tile.EnchantmentsSeerTileContainer;
-import com.nuggylib.enchantmentsseer.common.inventory.container.tile.SeersEnchantingTableContainer;
 import com.nuggylib.enchantmentsseer.common.tile.block.TileEntitySeersEnchantmentTable;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.model.BookModel;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnchantmentNameParts;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -38,7 +21,7 @@ import java.util.Random;
  *
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/client/gui/machine/GuiFuelwoodHeater.java"
  */
-public class GuiSeersEnchantingTable extends GuiEnchantmentsSeerTile<TileEntitySeersEnchantmentTable, SeersEnchantingTableContainer> {
+public class GuiSeersEnchantingTable extends GuiEnchantmentsSeerTile<TileEntitySeersEnchantmentTable, EnchantmentsSeerTileContainer<TileEntitySeersEnchantmentTable>> {
 
     private static final ResourceLocation ENCHANTING_BOOK_LOCATION = new ResourceLocation("enchantments-seer:textures/entity/enchanting_table_book.png");
     private static final BookModel BOOK_MODEL = new BookModel();
@@ -52,7 +35,7 @@ public class GuiSeersEnchantingTable extends GuiEnchantmentsSeerTile<TileEntityS
     public float oOpen;
     private ItemStack last = ItemStack.EMPTY;
 
-    public GuiSeersEnchantingTable(SeersEnchantingTableContainer container, PlayerInventory inventory, ITextComponent title) {
+    public GuiSeersEnchantingTable(EnchantmentsSeerTileContainer<TileEntitySeersEnchantmentTable> container, PlayerInventory inventory, ITextComponent title) {
         super(container, inventory, title);
         dynamicSlots = true;
     }

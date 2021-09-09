@@ -6,6 +6,7 @@ import com.nuggylib.enchantmentsseer.api.annotations.NonNull;
 import com.nuggylib.enchantmentsseer.api.inventory.AutomationType;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.inventory.slot.BasicInventorySlot;
+import com.nuggylib.enchantmentsseer.common.util.SeersEnchantmentHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -22,6 +23,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class EnchantInventorySlot extends BasicInventorySlot {
+
+    private List<Enchantment> enchantmentsForCurrentItem = new ArrayList<>();
 
     public static EnchantInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
         return at(alwaysTrue, listener, x, y);
@@ -43,18 +46,23 @@ public class EnchantInventorySlot extends BasicInventorySlot {
         setSlotType(ContainerSlotType.INPUT);
     }
 
-    protected List<EnchantmentData> getEnchantments(ItemStack itemToEnchant) {
-        EnchantmentsSeer.logger.info("Getting enchantments for item");
-        // TODO: Cache the data for the enchantments somewhere
-        return EnchantmentHelper.getAvailableEnchantmentResults(10, itemToEnchant, false);
+    public List<Enchantment> getEnchantments(ItemStack itemToEnchant) {
+        return enchantmentsForCurrentItem;
     }
 
+    /**
+     * Handles the logic to generate/refresh the list of enchantments for the item currently in the slot.
+     *
+     * @param stack
+     * @param action
+     * @param automationType
+     * @return
+     */
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        EnchantmentsSeer.logger.info("EnchantInventorySlot#insertItem");
-        List<EnchantmentData> enchantments = getEnchantments(stack);
-        for (EnchantmentData item : enchantments) {
-            EnchantmentsSeer.logger.info(String.format("Enchantment: %s", item.enchantment.getFullname(0).getString()));
+        enchantmentsForCurrentItem = SeersEnchantmentHelper.getAvailableEnchantmentResults(stack, null, true);
+        for (Enchantment enchantment : enchantmentsForCurrentItem) {
+            EnchantmentsSeer.logger.info(String.format("Enchantment (at max): %s", enchantment.getFullname(enchantment.getMaxLevel()).getString()));
         }
         return super.insertItem(stack, action, automationType);
     }

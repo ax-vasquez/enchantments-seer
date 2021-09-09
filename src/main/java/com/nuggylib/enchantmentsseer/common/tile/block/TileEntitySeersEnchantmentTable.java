@@ -54,7 +54,6 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
     private static final Random RANDOM = new Random();
     private ITextComponent name;
 
-    private double lastEnvironmentLoss;
     // TODO: See if we need to fully-implement this class to get things to a working state
 
     public TileEntitySeersEnchantmentTable() {
