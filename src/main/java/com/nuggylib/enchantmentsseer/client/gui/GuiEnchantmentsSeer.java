@@ -71,7 +71,6 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
      */
     protected boolean dynamicSlots;
 
-    // TODO: It appears we need to add windows to the LRU for the corresponding GUI; I checked the logs and it seems the children field is never populated
     protected final LRU<GuiWindow> windows = new LRU<>();
     protected final List<GuiElement> focusListeners = new ArrayList<>();
     public boolean switchingToJEI;
@@ -255,6 +254,7 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
     @Override
     protected boolean isMouseOverSlot(@Nonnull Slot slot, double mouseX, double mouseY) {
         if (slot instanceof IVirtualSlot) {
+            EnchantmentsSeer.logger.info("Mouse over slot event");
             //Virtual slots need special handling to allow for matching them to the window they may be attached to
             IVirtualSlot virtualSlot = (IVirtualSlot) slot;
             int xPos = virtualSlot.getActualX();
@@ -484,6 +484,7 @@ public abstract class GuiEnchantmentsSeer<CONTAINER extends Container> extends V
      */
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        EnchantmentsSeer.logger.info("Mouse dragged");
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }

@@ -1,5 +1,6 @@
 package com.nuggylib.enchantmentsseer.common.tile.base;
 
+import com.nuggylib.enchantmentsseer.api.IContentsListener;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.api.NBTConstants;
 import com.nuggylib.enchantmentsseer.api.DataHandlerUtils;
@@ -48,7 +49,7 @@ import java.util.Set;
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/tile/base/TileEntityMekanism.java"
  */
 public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity implements ITickableTileEntity, IEnchantmentsSeerInventory, ISustainedInventory,
-        ITileDirectional {
+        ITileDirectional, IContentsListener {
 
     protected final ItemHandlerManager itemHandlerManager;
     private final List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
@@ -255,5 +256,10 @@ public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity im
      * Update call for machines. Use instead of updateEntity -- it's called every tick on the server side.
      */
     protected void onUpdateServer() {
+    }
+
+    @Override
+    public void onContentsChanged() {
+        markDirty(false);
     }
 }

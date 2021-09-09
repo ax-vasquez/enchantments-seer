@@ -3,17 +3,15 @@ package com.nuggylib.enchantmentsseer.common.inventory.container;
 import com.nuggylib.enchantmentsseer.api.Action;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.inventory.container.property.PropertyData;
-import com.nuggylib.enchantmentsseer.common.inventory.container.slot.HotBarSlot;
-import com.nuggylib.enchantmentsseer.common.inventory.container.slot.IInsertableSlot;
-import com.nuggylib.enchantmentsseer.common.inventory.container.slot.MainInventorySlot;
+import com.nuggylib.enchantmentsseer.common.inventory.container.slot.*;
 import com.nuggylib.enchantmentsseer.common.inventory.container.sync.ISyncableData;
 import com.nuggylib.enchantmentsseer.common.inventory.container.sync.ISyncableData.DirtyType;
 import com.nuggylib.enchantmentsseer.common.inventory.container.sync.SyncableInt;
 import com.nuggylib.enchantmentsseer.common.inventory.container.sync.SyncableItemStack;
 import com.nuggylib.enchantmentsseer.common.network.to_client.container.PacketUpdateContainer;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeRegistryObject;
-import com.nuggylib.enchantmentsseer.common.inventory.container.slot.InventoryContainerSlot;
 import com.nuggylib.enchantmentsseer.common.util.StackUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -58,6 +56,7 @@ public abstract class EnchantmentsSeerContainer extends Container {
      * Only used on the server
      */
     private Map<UUID, SelectedWindowData> selectedWindows;
+    private final Map<Object, List<ISyncableData>> specificTrackedData = new Object2ObjectOpenHashMap<>();
 
     protected EnchantmentsSeerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv) {
         super(type.getContainerType(), id);
@@ -65,6 +64,20 @@ public abstract class EnchantmentsSeerContainer extends Container {
         if (!this.inv.player.level.isClientSide) {
             //Only keep track of uuid based selected grids on the server (we use a size of one as for the most part containers are actually 1:1)
             selectedWindows = new HashMap<>(1);
+        }
+    }
+
+    public void startTracking(Object key, ISpecificContainerTracker tracker) {
+        List<ISyncableData> list = tracker.getSpecificSyncableData();
+        list.forEach(this::track);
+        specificTrackedData.put(key, list);
+    }
+
+    public void stopTracking(Object key) {
+        List<ISyncableData> list = specificTrackedData.get(key);
+        if (list != null) {
+            list.forEach(trackedData::remove);
+            specificTrackedData.remove(key);
         }
     }
 
@@ -245,6 +258,11 @@ public abstract class EnchantmentsSeerContainer extends Container {
                 EnchantmentsSeer.packetHandler.sendTo(packet, (ServerPlayerEntity) listener);
             }
         }
+    }
+
+    //Start container sync management
+    public void track(ISyncableData data) {
+        trackedData.add(data);
     }
 
     @Override

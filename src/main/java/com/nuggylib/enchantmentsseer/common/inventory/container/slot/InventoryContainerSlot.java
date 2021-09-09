@@ -3,6 +3,7 @@ package com.nuggylib.enchantmentsseer.common.inventory.container.slot;
 import com.nuggylib.enchantmentsseer.api.Action;
 import com.nuggylib.enchantmentsseer.api.inventory.AutomationType;
 import com.nuggylib.enchantmentsseer.api.inventory.IInventorySlot;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;

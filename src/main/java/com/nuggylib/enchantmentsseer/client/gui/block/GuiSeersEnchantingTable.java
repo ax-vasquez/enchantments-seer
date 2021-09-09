@@ -69,6 +69,11 @@ public class GuiSeersEnchantingTable extends GuiEnchantmentsSeerTile<TileEntityS
     }
 
     @Override
+    protected void addSlots() {
+        super.addSlots();
+    }
+
+    @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());

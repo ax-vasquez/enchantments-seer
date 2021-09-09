@@ -3,14 +3,19 @@ package com.nuggylib.enchantmentsseer.common.tile.block;
 import com.nuggylib.enchantmentsseer.api.annotations.NonNull;
 import com.nuggylib.enchantmentsseer.api.recipes.inputs.IInputHandler;
 import com.nuggylib.enchantmentsseer.api.recipes.inputs.InputHelper;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.IInventorySlotHolder;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.InventorySlotHelper;
+import com.nuggylib.enchantmentsseer.common.inventory.container.slot.EnchantInventorySlot;
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.InputInventorySlot;
 import com.nuggylib.enchantmentsseer.common.lib.transmitter.TransmissionType;
 import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerBlocks;
 import com.nuggylib.enchantmentsseer.common.tile.base.TileEntityEnchantmentsSeer;
 import com.nuggylib.enchantmentsseer.common.tile.component.TileComponentConfig;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentData;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,7 +26,10 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/tile/prefab/TileEntityElectricMachine.java"
@@ -30,7 +38,7 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
 
     protected final IInputHandler<@NonNull ItemStack> enchantItemHelper;
     protected final IInputHandler<@NonNull ItemStack> reagentItemHelper;
-    private InputInventorySlot inputSlot;
+    private EnchantInventorySlot inputSlot;
     private InputInventorySlot reagentSlot;
 
     public int time;
@@ -63,7 +71,7 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = InputInventorySlot.at(null, 15, 47));
+        builder.addSlot(inputSlot = EnchantInventorySlot.at(null, 15, 47));
         builder.addSlot(reagentSlot = InputInventorySlot.at(null, 35, 47));
         return builder.build();
     }
@@ -147,11 +155,6 @@ public class TileEntitySeersEnchantmentTable extends TileEntityEnchantmentsSeer 
     @Nullable
     public ITextComponent getCustomName() {
         return this.name;
-    }
-
-    @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
     }
 
 }
