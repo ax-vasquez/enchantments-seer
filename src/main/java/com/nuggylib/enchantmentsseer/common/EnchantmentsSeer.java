@@ -18,7 +18,9 @@
 package com.nuggylib.enchantmentsseer.common;
 
 import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerBlocks;
+import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerContainerTypes;
 import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerItems;
+import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerTileEntityTypes;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -47,9 +49,8 @@ public class EnchantmentsSeer
         instance = this;
         EnchantmentsSeerItems.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         EnchantmentsSeerBlocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        // TODO Figure out an easier way (than Mekanism) to register these types
-//        EnchantmentsSeerTileEntityTypes.TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-//        EnchantmentsSeerContainerTypes.CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        EnchantmentsSeerTileEntityTypes.TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        EnchantmentsSeerContainerTypes.CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
 }
