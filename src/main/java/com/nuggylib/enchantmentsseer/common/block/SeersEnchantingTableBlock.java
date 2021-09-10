@@ -1,15 +1,18 @@
 package com.nuggylib.enchantmentsseer.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
+import com.nuggylib.enchantmentsseer.common.tile.SeersEnchantingTableTileEntity;
+import net.minecraft.block.*;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathType;
+import net.minecraft.tileentity.EnchantingTableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.block.EnchantingTableBlock;
 
 /**
  * Basically a modified version of {@link EnchantingTableBlock}
@@ -22,10 +25,12 @@ public class SeersEnchantingTableBlock extends ContainerBlock {
         super(properties);
     }
 
+    @Override
     public boolean useShapeForLightOcclusion(BlockState state) {
         return true;
     }
 
+    @Override
     public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos blockPos, ISelectionContext context) {
         return SHAPE;
     }
@@ -33,6 +38,28 @@ public class SeersEnchantingTableBlock extends ContainerBlock {
     @Nullable
     @Override
     public TileEntity newBlockEntity(IBlockReader reader) {
-        return null;
+        return new SeersEnchantingTableTileEntity();
     }
+
+    @Override
+    public BlockRenderType getRenderShape(BlockState blockState) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Override
+    public void setPlacedBy(World worldIn, BlockPos blockPos, BlockState blockState, LivingEntity livingEntity, ItemStack itemStack) {
+        if (itemStack.hasCustomHoverName()) {
+            TileEntity tileentity = worldIn.getBlockEntity(blockPos);
+            if (tileentity instanceof EnchantingTableTileEntity) {
+                ((EnchantingTableTileEntity)tileentity).setCustomName(itemStack.getHoverName());
+            }
+        }
+
+    }
+
+    @Override
+    public boolean isPathfindable(BlockState blockState, IBlockReader reader, BlockPos blockPos, PathType pathType) {
+        return false;
+    }
+
 }

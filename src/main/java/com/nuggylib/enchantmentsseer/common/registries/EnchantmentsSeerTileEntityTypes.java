@@ -1,9 +1,14 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.tile.SeersEnchantingTableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
 /**
- * Inspired by the Mekanism codebase
- *
- * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/registries/MekanismTileEntityTypes.java"
+ * @see "https://mcforge.readthedocs.io/en/latest/tileentities/tileentity/#creating-a-tileentity"
  */
 public class EnchantmentsSeerTileEntityTypes {
 
@@ -11,8 +16,8 @@ public class EnchantmentsSeerTileEntityTypes {
 
     }
 
-//    public static final TileEntityTypeDeferredRegister TILE_ENTITY_TYPES = new TileEntityTypeDeferredRegister(EnchantmentsSeer.MOD_ID);
-//
-//    public static final TileEntityTypeRegistryObject<TileEntitySeersEnchantmentTable> SEERS_ENCHANTING_TABLE = TILE_ENTITY_TYPES.register(EnchantmentsSeerBlocks.SEERS_ENCHANTING_TABLE, TileEntitySeersEnchantmentTable::new);
+    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, EnchantmentsSeer.MOD_ID);
+
+    public static final RegistryObject<TileEntityType<SeersEnchantingTableTileEntity>> SEERS_ENCHANTING_TABLE = TILE_ENTITY_TYPES.register("seers_enchanting_table", () -> TileEntityType.Builder.of(SeersEnchantingTableTileEntity::new, EnchantmentsSeerBlocks.SEERS_ENCHANTING_TABLE.get()).build(null));
 
 }
