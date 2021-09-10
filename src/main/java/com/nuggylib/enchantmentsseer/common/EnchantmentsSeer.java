@@ -41,6 +41,8 @@ public class EnchantmentsSeer
      */
     public static EnchantmentsSeer instance;
 
+    public static CreativeTabEnchantmentsSeer tabEnchantmentsSeer = new CreativeTabEnchantmentsSeer();
+
     public EnchantmentsSeer() {
         instance = this;
         EnchantmentsSeerItems.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
