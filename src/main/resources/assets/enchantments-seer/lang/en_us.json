@@ -1,9 +1,10 @@
 {
   "constants.enchantments-seer.mod_name": "Enchantments Seer",
-  "item.enchantments-seer.seers_stone_u": "Seer's Stone (u)",
+  "item.enchantments-seer.seers_stone_uncharged": "Seer's Stone (u)",
   "item.enchantments-seer.seers_stone": "Seer's Stone",
   "item.enchantments-seer.seers_manuscript": "Seer's Manuscript",
   "item.enchantments-seer.seers_enchanted_page": "Enchanted Page",
   "block.enchantments-seer.seers_enchanting_table": "Seer's Enchanting Table",
-  "container.seers_enchant": "Enchant Item"
+  "container.seers_enchant": "Enchant Item",
+  "itemGroup.enchantments-seer": "Enchantments Seer"
 }
