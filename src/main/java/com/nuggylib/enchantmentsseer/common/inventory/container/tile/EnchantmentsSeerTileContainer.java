@@ -6,6 +6,7 @@ import com.nuggylib.enchantmentsseer.common.inventory.container.EnchantmentsSeer
 import com.nuggylib.enchantmentsseer.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import com.nuggylib.enchantmentsseer.common.inventory.slot.EnchantmentsSeerSlot;
 import com.nuggylib.enchantmentsseer.common.registration.impl.ContainerTypeRegistryObject;
+import com.nuggylib.enchantmentsseer.common.tile.component.config.ITileComponent;
 import com.nuggylib.enchantmentsseer.common.util.WorldUtils;
 import com.nuggylib.enchantmentsseer.api.inventory.IInventorySlot;
 import com.nuggylib.enchantmentsseer.common.tile.base.TileEntityEnchantmentsSeer;
@@ -97,6 +98,10 @@ public class EnchantmentsSeerTileContainer<TILE extends TileEntityEnchantmentsSe
                 }
             }
         }
+    }
+
+    protected void addContainerTrackers() {
+        tile.addContainerTrackers(this);
     }
 
     @Nonnull

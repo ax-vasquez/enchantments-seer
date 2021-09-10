@@ -52,6 +52,17 @@ If you were to put the following in your TileEntity's `getInitialInventory` meth
 > it in the enchanting table and walk away. I would like to make it so that both the item to be enchanted and the 
 > reagent slots can retain their item stacks. This section will cover how to do that.
 
+It should be noted the even Forge documentation manages to cover this in somewhat-acceptable detail here:
+* https://mcforge.readthedocs.io/en/1.16.x/datastorage/capabilities/#forge-provided-capabilities
+  * The main item of interest is `IItemHandler` - _this is crucial for persistent item storage for **anything**, including
+    TileEntities, Entities, and even ItemStacks_
+
+Our base interface extending Vanilla functionality is `IEnchantmentsSeerInventory`, which implements `IItemHandlerModifiable`,
+which is simply an implementation of `IItemHandler` (the class Forge says we should use for item storage), but with 
+an additional method, `setStackInSlot`.
+
+
+
 ## The Container class
 **You don't usually need an explicit container class in our mod.** This is only because we have logic in place to 
 dynamically-construct the containers for TileEntity classes as-needed, using generics.

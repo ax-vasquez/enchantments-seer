@@ -13,6 +13,9 @@ import com.nuggylib.enchantmentsseer.common.block.attribute.AttributeGui;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.IInventorySlotHolder;
 import com.nuggylib.enchantmentsseer.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import com.nuggylib.enchantmentsseer.common.capabilities.resolver.manager.ItemHandlerManager;
+import com.nuggylib.enchantmentsseer.common.inventory.container.ITrackableContainer;
+import com.nuggylib.enchantmentsseer.common.inventory.container.sync.dynamic.SyncMapper;
+import com.nuggylib.enchantmentsseer.common.inventory.container.tile.EnchantmentsSeerTileContainer;
 import com.nuggylib.enchantmentsseer.common.tile.component.TileComponentConfig;
 import com.nuggylib.enchantmentsseer.common.tile.component.config.ITileComponent;
 import com.nuggylib.enchantmentsseer.common.tile.interfaces.ISustainedInventory;
@@ -49,7 +52,7 @@ import java.util.Set;
  * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/tile/base/TileEntityMekanism.java"
  */
 public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity implements ITickableTileEntity, IEnchantmentsSeerInventory, ISustainedInventory,
-        ITileDirectional, IContentsListener {
+        ITileDirectional, IContentsListener, ITrackableContainer {
 
     protected final ItemHandlerManager itemHandlerManager;
     private final List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
@@ -75,6 +78,8 @@ public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity im
     @Nullable
     private Direction cachedDirection;
 
+    // TODO: From what I can tell, the itemHandlerManager should be enough to persist the data (it's a bit wiry, but it does seem okay)
+    // TODO:    I need to figure out if there may be something wrong (or missing) from the packet syncing setup
     public TileEntityEnchantmentsSeer(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntity>) blockProvider.getBlock()).getTileType());
         this.blockProvider = blockProvider;
@@ -173,6 +178,16 @@ public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity im
         return nbtTags;
     }
 
+    @Override
+    public void addContainerTrackers(EnchantmentsSeerTileContainer container) {
+        // setup dynamic container syncing
+        SyncMapper.INSTANCE.setup(container, getClass(), () -> this);
+
+        for (ITileComponent component : components) {
+            component.trackForMainContainer(container);
+        }
+    }
+
     //Methods for implementing ITileContainer
     @Nullable
     protected IInventorySlotHolder getInitialInventory() {
@@ -198,9 +213,12 @@ public abstract class TileEntityEnchantmentsSeer extends CapabilityTileEntity im
         return itemHandlerManager.getContainers(side);
     }
 
+    // TODO: Figure out why this isn't being called
     @Override
     public void setInventory(ListNBT nbtTags, Object... data) {
+        EnchantmentsSeer.logger.info("Setting inventory...");
         if (nbtTags != null && !nbtTags.isEmpty() && persistInventory()) {
+            EnchantmentsSeer.logger.info("persisting inventory...");
             DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
         }
     }

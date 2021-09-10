@@ -46,10 +46,6 @@ public class EnchantInventorySlot extends BasicInventorySlot {
         setSlotType(ContainerSlotType.INPUT);
     }
 
-    public List<Enchantment> getEnchantments(ItemStack itemToEnchant) {
-        return enchantmentsForCurrentItem;
-    }
-
     /**
      * Handles the logic to generate/refresh the list of enchantments for the item currently in the slot.
      *
@@ -66,4 +62,5 @@ public class EnchantInventorySlot extends BasicInventorySlot {
         }
         return super.insertItem(stack, action, automationType);
     }
+
 }

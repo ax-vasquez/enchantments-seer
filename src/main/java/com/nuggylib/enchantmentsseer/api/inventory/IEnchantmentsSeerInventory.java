@@ -1,6 +1,7 @@
 package com.nuggylib.enchantmentsseer.api.inventory;
 
 import com.nuggylib.enchantmentsseer.api.Action;
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -76,6 +77,7 @@ public interface IEnchantmentsSeerInventory extends IItemHandlerModifiable {
 
     @Override
     default void setStackInSlot(int slot, ItemStack stack) {
+        EnchantmentsSeer.logger.info(String.format("Inserting into slot %s: %s", slot, stack));
         setStackInSlot(slot, stack, getInventorySideFor());
     }
 
@@ -113,7 +115,11 @@ public interface IEnchantmentsSeerInventory extends IItemHandlerModifiable {
      * @implNote The {@link ItemStack} <em>should not</em> be modified in this function!
      */
     default ItemStack insertItem(int slot, ItemStack stack, @Nullable Direction side, Action action) {
-        return ItemStack.EMPTY; // TODO: Update this to be something meaningful (or update the code to more-closely emulate Mekanism codebase)
+        IInventorySlot inventorySlot = getInventorySlot(slot);
+        if (inventorySlot == null) {
+            return stack;
+        }
+        return inventorySlot.insertItem(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     };
 
     default ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
