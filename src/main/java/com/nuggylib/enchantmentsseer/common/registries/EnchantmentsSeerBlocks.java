@@ -1,13 +1,9 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
-import com.nuggylib.enchantmentsseer.common.block.prefab.BlockTile;
-import com.nuggylib.enchantmentsseer.common.content.BlockTypeTile;
-import com.nuggylib.enchantmentsseer.common.item.block.ItemBlockEnchantmentsSeer;
-import com.nuggylib.enchantmentsseer.common.item.block.ItemBlockSeersEnchantingTable;
-import com.nuggylib.enchantmentsseer.common.registration.impl.BlockDeferredRegister;
-import com.nuggylib.enchantmentsseer.common.registration.impl.BlockRegistryObject;
-import com.nuggylib.enchantmentsseer.common.tile.block.TileEntitySeersEnchantmentTable;
+import net.minecraft.block.Block;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Block registy class
@@ -21,9 +17,9 @@ public class EnchantmentsSeerBlocks {
     private EnchantmentsSeerBlocks() {
     }
 
-    public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(EnchantmentsSeer.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, EnchantmentsSeer.MOD_ID);
 
     // Blocks
-    public static final BlockRegistryObject<BlockTile<TileEntitySeersEnchantmentTable, BlockTypeTile<TileEntitySeersEnchantmentTable>>, ItemBlockEnchantmentsSeer> SEERS_ENCHANTING_TABLE = BLOCKS.register("seers_enchanting_table", () -> new BlockTile<>(EnchantmentsSeerBlockTypes.SEERS_ENCHANTING_TABLE), ItemBlockSeersEnchantingTable::new);
+//    public static final BlockRegistryObject<BlockTile<TileEntitySeersEnchantmentTable, BlockTypeTile<TileEntitySeersEnchantmentTable>>, ItemBlockEnchantmentsSeer> SEERS_ENCHANTING_TABLE = BLOCKS.register("seers_enchanting_table", () -> new BlockTile<>(EnchantmentsSeerBlockTypes.SEERS_ENCHANTING_TABLE), ItemBlockSeersEnchantingTable::new);
 
 }
