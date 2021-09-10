@@ -1,17 +1,15 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.block.SeersEnchantingTableBlock;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-/**
- * Block registy class
- *
- * Based on the Mekanism codebase
- *
- * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/registries/MekanismBlocks.java"
- */
 public class EnchantmentsSeerBlocks {
 
     private EnchantmentsSeerBlocks() {
@@ -20,6 +18,6 @@ public class EnchantmentsSeerBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, EnchantmentsSeer.MOD_ID);
 
     // Blocks
-//    public static final BlockRegistryObject<BlockTile<TileEntitySeersEnchantmentTable, BlockTypeTile<TileEntitySeersEnchantmentTable>>, ItemBlockEnchantmentsSeer> SEERS_ENCHANTING_TABLE = BLOCKS.register("seers_enchanting_table", () -> new BlockTile<>(EnchantmentsSeerBlockTypes.SEERS_ENCHANTING_TABLE), ItemBlockSeersEnchantingTable::new);
+    public static final RegistryObject<Block> SEERS_ENCHANTING_TABLE = BLOCKS.register("seers_enchanting_table", () -> new SeersEnchantingTableBlock(AbstractBlock.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK)));
 
 }
