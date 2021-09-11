@@ -36,8 +36,7 @@ minecraft {
 
     // Allows access to otherwise-inaccessible fields/methods from the Minecraft code
     // See https://mcforge.readthedocs.io/en/latest/advanced/accesstransformers/
-    // TODO Re-enable these if we end up needing to do fancy stuff within deeper minecraft code (get the code from mek-arch branch, if needed)
-    //accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
+    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
