@@ -21,6 +21,7 @@ import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerBlocks;
 import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerContainerTypes;
 import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerItems;
 import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerTileEntityTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -51,6 +52,10 @@ public class EnchantmentsSeer
         EnchantmentsSeerBlocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         EnchantmentsSeerTileEntityTypes.TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         EnchantmentsSeerContainerTypes.CONTAINER_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+    }
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 
 }
