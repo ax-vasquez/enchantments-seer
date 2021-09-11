@@ -1,15 +1,26 @@
 package com.nuggylib.enchantmentsseer.common.block;
 
+import com.nuggylib.enchantmentsseer.common.inventory.container.SeersEnchantingTableContainer;
 import com.nuggylib.enchantmentsseer.common.tile.SeersEnchantingTableTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.EnchantmentContainer;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.tileentity.EnchantingTableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.INameable;
+import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +50,29 @@ public class SeersEnchantingTableBlock extends ContainerBlock {
     @Override
     public TileEntity newBlockEntity(IBlockReader reader) {
         return new SeersEnchantingTableTileEntity();
+    }
+
+    @Override
+    public ActionResultType use(BlockState blockState, World worldIn, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (worldIn.isClientSide) {
+            return ActionResultType.SUCCESS;
+        } else {
+            player.openMenu(blockState.getMenuProvider(worldIn, blockPos));
+            return ActionResultType.CONSUME;
+        }
+    }
+
+    @Nullable
+    public INamedContainerProvider getMenuProvider(BlockState blockState, World worldIn, BlockPos blockPos) {
+        TileEntity tileentity = worldIn.getBlockEntity(blockPos);
+        if (tileentity instanceof SeersEnchantingTableTileEntity) {
+            ITextComponent itextcomponent = ((INameable)tileentity).getDisplayName();
+            return new SimpleNamedContainerProvider((containerId, inv, player) -> {
+                return new SeersEnchantingTableContainer(containerId, IWorldPosCallable.create(worldIn, blockPos), inv);
+            }, itextcomponent);
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.nuggylib.enchantmentsseer.client;
 
+import com.nuggylib.enchantmentsseer.client.gui.SeersEnchantingTableScreen;
 import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.registries.EnchantmentsSeerContainerTypes;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -20,7 +23,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-
+        ScreenManager.register(EnchantmentsSeerContainerTypes.SEERS_ENCHANTING_TABLE.get(), SeersEnchantingTableScreen::new);
     }
 
     @SubscribeEvent

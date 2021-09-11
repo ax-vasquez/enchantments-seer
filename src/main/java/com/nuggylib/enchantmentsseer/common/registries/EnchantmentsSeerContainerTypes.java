@@ -1,18 +1,19 @@
 package com.nuggylib.enchantmentsseer.common.registries;
 
-/**
- * Inspired by Mekanism code
- *
- * @see "https://github.com/mekanism/Mekanism/blob/v10.1/src/main/java/mekanism/common/registries/MekanismContainerTypes.java"
- */
+import com.nuggylib.enchantmentsseer.common.EnchantmentsSeer;
+import com.nuggylib.enchantmentsseer.common.inventory.container.SeersEnchantingTableContainer;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
 public class EnchantmentsSeerContainerTypes {
 
     private EnchantmentsSeerContainerTypes() {
-
     }
 
-//    public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(EnchantmentsSeer.MOD_ID);
-//
-//    public static final ContainerTypeRegistryObject<EnchantmentsSeerTileContainer<TileEntitySeersEnchantmentTable>> SEERS_ENCHANTING_TABLE = CONTAINER_TYPES.register(EnchantmentsSeerBlocks.SEERS_ENCHANTING_TABLE, TileEntitySeersEnchantmentTable.class);
+    public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, EnchantmentsSeer.MOD_ID);
+
+    public static final RegistryObject<ContainerType<SeersEnchantingTableContainer>> SEERS_ENCHANTING_TABLE = CONTAINER_TYPES.register("seers_enchanting_table", () -> new ContainerType<>(SeersEnchantingTableContainer::new));
 
 }
