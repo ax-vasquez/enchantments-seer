@@ -61,9 +61,6 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.ConfigValue<Integer> costScalingSystem;
 
 
-
-
-
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
 
@@ -84,7 +81,7 @@ public class ConfigSpecs {
                     .define("Default Seer's Stone State", 0);
 
             this.costScalingSystem = builder.comment("Determines how to scale the cost of recharging Seer's Stones.")
-                    .translation("enchantments-seer.config.costScalingSystem.title")
+                    .translation("enchantments-seer.config.costScalingSystem.title").push("costScalingSystem")
                     .define("Cost Scaling System", 0);
 
             builder.pop();
