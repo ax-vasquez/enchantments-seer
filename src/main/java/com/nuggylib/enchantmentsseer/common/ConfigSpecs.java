@@ -66,11 +66,27 @@ public class ConfigSpecs {
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
-            this.chargingSystem = builder.comment("Determines the system to use for charging and recharging Seer's Stones.").define("Charging System", 0);
-            this.xpChargingCost = builder.comment("Determines the number of levels to charge a Seer's Stone.").define("XP Charging Cost", 10);
-            this.heartsChargingCost = builder.comment("Determines the number of hearts to charge a Seer's Stone.").define("Hearts Charging Cost", 5);
-            this.defaultStoneState = builder.comment("Determines the initial state of a Seer's Stone upon crafting (uncharged or charged)").define("Default Seer's Stone State", 0);
-            this.costScalingSystem = builder.comment("Determines how to scale the cost of recharging Seer's Stones.").define("Cost Scaling System", 0);
+
+            this.chargingSystem = builder.comment("Determines the system to use for charging and recharging Seer's Stones.")
+                    .translation("enchantments-seer.config.chargingSystem.title")
+                    .define("Charging System", 0);
+
+            this.xpChargingCost = builder.comment("Determines the number of levels to charge a Seer's Stone.")
+                    .translation("enchantments-seer.config.xpChargingCost.title")
+                    .define("XP Charging Cost", 10);
+
+            this.heartsChargingCost = builder.comment("Determines the number of hearts to charge a Seer's Stone.")
+                    .translation("enchantments-seer.config.heartsChargingCost.title")
+                    .define("Hearts Charging Cost", 5);
+
+            this.defaultStoneState = builder.comment("Determines the initial state of a Seer's Stone upon crafting (uncharged or charged)")
+                    .translation("enchantments-seer.config.defaultStoneState.title")
+                    .define("Default Seer's Stone State", 0);
+
+            this.costScalingSystem = builder.comment("Determines how to scale the cost of recharging Seer's Stones.")
+                    .translation("enchantments-seer.config.costScalingSystem.title")
+                    .define("Cost Scaling System", 0);
+
             builder.pop();
         }
 
