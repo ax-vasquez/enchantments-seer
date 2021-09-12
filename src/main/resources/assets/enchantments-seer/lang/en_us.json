@@ -6,5 +6,10 @@
   "item.enchantments-seer.seers_enchanted_page": "Enchanted Page",
   "block.enchantments-seer.seers_enchanting_table": "Seer's Enchanting Table",
   "container.seers_enchant": "Enchant Item",
-  "itemGroup.enchantments-seer": "Enchantments Seer"
+  "itemGroup.enchantments-seer": "Enchantments Seer",
+  "enchantments-seer.config.chargingSystem.title": "Charging System",
+  "enchantments-seer.config.xpChargingCost.title": "XP (Levels) Charging Cost",
+  "enchantments-seer.config.heartsChargingCost.title": "Hearts Charging Cost",
+  "enchantments-seer.config.defaultStoneState.title": "Default Seer's Stone State",
+  "enchantments-seer.config.costScalingSystem.title": "Cost Scaling System"
 }
