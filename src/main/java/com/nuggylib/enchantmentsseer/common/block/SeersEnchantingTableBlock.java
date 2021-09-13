@@ -46,6 +46,22 @@ public class SeersEnchantingTableBlock extends ContainerBlock {
         return SHAPE;
     }
 
+    // Forge docs require this method be implemented for any Block with a TileEntity for version 1.16.5 mods
+    // See https://mcforge.readthedocs.io/en/1.16.x/tileentities/tileentity/#attaching-a-tileentity-to-a-block
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    // Forge docs require this method be implemented for any Block with a TileEntity for version 1.16.5 mods
+    // See https://mcforge.readthedocs.io/en/1.16.x/tileentities/tileentity/#attaching-a-tileentity-to-a-block
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new SeersEnchantingTableTileEntity();
+    }
+
+    // TODO: I think we need to remove this as this is what Minecraft vanilla is using
     @Nullable
     @Override
     public TileEntity newBlockEntity(IBlockReader reader) {

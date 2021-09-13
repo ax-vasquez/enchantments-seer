@@ -8,6 +8,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
 
+// TODO: Find out how to link to the TILE so that we can use its inventory
 public class GuiEnchantmentsSeerTile<TILE extends TileEntity, CONTAINER extends Container> extends GuiEnchantmentsSeer<CONTAINER> {
 
     protected GuiEnchantmentsSeerTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {

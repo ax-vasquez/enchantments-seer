@@ -24,6 +24,7 @@ import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.Tags;
+import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class SeersEnchantingTableContainer extends Container {
      */
     private final IWorldPosCallable access;
 
+    // TODO: This will probably need to be removed so that we can instead have the slots linked to the TileEntity
     /**
      * The slots for the container
      *
@@ -60,10 +62,24 @@ public class SeersEnchantingTableContainer extends Container {
         }
     };
 
+    // TODO: Remove add slot logic from the Container and move it to the TileEntity; get the tile's inventory and use
+    //  that when creating the slots in the container.
     /**
      * Overloaded constructor
      *
-     * This constructor is reponsible for "informing" the GUI where the slots belong on the texture, once rendered.
+     * The slots added in the container <b>are not</b> persistent storage slots. Containers are only used with GUIs.
+     *
+     * Mekanism connects an inventory to the underlying {@link TileEntity}. Their architecture is setup so that each
+     * container has access to its underlying tile's inventory (if it has one) and generates the slots based on the
+     * definitions in the TileEntity class. While we don't have the same architecture in place, we should aim to have the
+     * same ease-of-access to the tile's inventory.
+     *
+     * Although it's totally-acceptable to create slots in the Container only, it does have an impact - notably, having
+     * slots defined only in the {@link Container} means that <b>your block does not have persistent storage.</b> This
+     * is because persistent storage is handled through the block's {@link TileEntity} class and NOT the Container.
+     *
+     * TODO: Create a base Container class that defines the logic to create the inventory and hot bar slots - these
+     *  SHOULD NOT persist and should therefore only exist in the Container definition
      */
     public SeersEnchantingTableContainer(int containerId, IWorldPosCallable access, PlayerInventory inv) {
         super(EnchantmentsSeerContainerTypes.SEERS_ENCHANTING_TABLE.get(), containerId);
@@ -106,7 +122,6 @@ public class SeersEnchantingTableContainer extends Container {
      * This constructor is used when registering the class
      */
     public SeersEnchantingTableContainer(int containerId, PlayerInventory playerInventory) {
-        // TODO: Find out what impact IWorldPosCallable.NULL has
         this(containerId, IWorldPosCallable.NULL, playerInventory);
     }
 
@@ -139,7 +154,7 @@ public class SeersEnchantingTableContainer extends Container {
                     List<Enchantment> list = EnchantmentsSeerEnchantHelper.getAvailableEnchantmentResults(stack, false);
 
                     for (Enchantment enchantment : list) {
-                        EnchantmentsSeer.logger.info(String.format("%s", enchantment.getFullname(enchantment.getMaxLevel())));
+                        EnchantmentsSeer.logger.info(String.format("%s", enchantment.getFullname(enchantment.getMaxLevel()).getString()));
                     }
                     this.broadcastChanges();
                 });

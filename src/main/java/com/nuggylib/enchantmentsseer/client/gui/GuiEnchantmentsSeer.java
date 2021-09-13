@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -378,6 +379,13 @@ public class GuiEnchantmentsSeer<CONTAINER extends Container> extends VirtualSlo
 
     /**
      * Adds the slots defined for the corresponding container using its container slots
+     *
+     * Note that this process is pretty indirect. By the time this code is reached, the underlying GUI's {@link TileEntity}
+     * has been assigned an inventory, then the {@link TileEntity}'s inventory is used to create the slots in the corresponding
+     * {@link Container} class. <b>Then</b>, by the time this method is invoked, the <pre>slots</pre> list will be populated
+     * and used in this method to create the slots in the GUI.
+     *
+     * TODO: Figure out if we even need the if-else logic since we only ever use the {@link SlotType#NORMAL} slot type
      */
     protected void addSlots() {
         int size = menu.slots.size();
@@ -385,7 +393,6 @@ public class GuiEnchantmentsSeer<CONTAINER extends Container> extends VirtualSlo
             Slot slot = menu.slots.get(i);
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
-                ContainerSlotType slotType = containerSlot.getSlotType();
                 //Shift the slots by one as the elements include the border of the slot
                 SlotType type = SlotType.NORMAL;
                 GuiSlot guiSlot = new GuiSlot(type, this, slot.x - 1, slot.y - 1);
@@ -404,6 +411,9 @@ public class GuiEnchantmentsSeer<CONTAINER extends Container> extends VirtualSlo
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Renders the background texture for the GUI
+     */
     @Override
     protected void renderBg(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
