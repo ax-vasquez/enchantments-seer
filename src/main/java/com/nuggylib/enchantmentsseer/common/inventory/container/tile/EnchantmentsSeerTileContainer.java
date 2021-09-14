@@ -44,23 +44,16 @@ public class EnchantmentsSeerTileContainer<TILE extends TileEntity> extends Ench
     }
 
     @Override
-    protected void openInventory(@Nonnull PlayerInventory inv) {
-        super.openInventory(inv);
-        // TODO
-        tile.open(inv.player);
-    }
-
-    @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
         //prevent Containers from remaining valid after the chunk has unloaded;
-        // TODO
+        // TODO - minimally-replicate what Mekanism does to implement their hasGui method
         return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }
 
     @Override
     protected void addSlots() {
         super.addSlots();
-        // TODO
+        // TODO - Implement our own ItemHandlerManager that completely ignores the concept of Sides - we need to use it to get the inventory
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);

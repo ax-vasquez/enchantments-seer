@@ -19,7 +19,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
 
     void setStack(ItemStack stack);
 
-    default ItemStack insertItem(ItemStack stack, Action action ) {
+    default ItemStack insertItem(ItemStack stack) {
         if (stack.isEmpty() || !isItemValid(stack)) {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
@@ -29,23 +29,8 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
             //Fail if we are a full slot
             return stack;
         }
-        boolean sameType = false;
-        if (isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(getStack(), stack))) {
+        if (isEmpty()) {
             int toAdd = Math.min(stack.getCount(), needed);
-            if (action.execute()) {
-                //If we want to actually insert the item, then update the current item
-                if (sameType) {
-                    // Note: this also will mark that the contents changed
-                    //We can just grow our stack by the amount we want to increase it
-                    growStack(toAdd, action);
-                } else {
-                    //If we are not the same type then we have to copy the stack and set it
-                    // Note: this also will mark that the contents changed
-                    ItemStack toSet = stack.copy();
-                    toSet.setCount(toAdd);
-                    setStack(toSet);
-                }
-            }
             ItemStack remainder = stack.copy();
             remainder.setCount(stack.getCount() - toAdd);
             return remainder;
@@ -54,7 +39,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
         return stack;
     }
 
-    default ItemStack extractItem(int amount, Action action) {
+    default ItemStack extractItem(int amount) {
         if (isEmpty() || amount < 1) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return ItemStack.EMPTY;
@@ -71,11 +56,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
         // especially for supporting the fact of limiting by the max stack size.
         ItemStack toReturn = current.copy();
         toReturn.setCount(amount);
-        if (action.execute()) {
-            //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
-            // Note: this also will mark that the contents changed
-            shrinkStack(amount, action);
-        }
+        shrinkStack(amount);
         return toReturn;
     }
 
@@ -86,13 +67,10 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
     @Nullable
     Slot createContainerSlot();
 
-    default int setStackSize(int amount, Action action) {
+    default int setStackSize(int amount) {
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
             return 0;
         }
         ItemStack stack = getStack();
@@ -100,7 +78,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (stack.getCount() == amount || action.simulate()) {
+        if (stack.getCount() == amount) {
             //If our size is not changing or we are only simulating the change, don't do anything
             return amount;
         }
@@ -110,18 +88,18 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
         return amount;
     }
 
-    default int growStack(int amount, Action action) {
+    default int growStack(int amount) {
         int current = getCount();
         if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(amount, getLimit(getStack()));
         }
-        int newSize = setStackSize(current + amount, action);
+        int newSize = setStackSize(current + amount);
         return newSize - current;
     }
 
-    default int shrinkStack(int amount, Action action) {
-        return -growStack(-amount, action);
+    default int shrinkStack(int amount) {
+        return -growStack(-amount);
     }
 
     default boolean isEmpty() {

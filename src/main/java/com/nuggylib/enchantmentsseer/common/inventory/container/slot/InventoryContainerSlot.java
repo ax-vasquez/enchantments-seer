@@ -36,9 +36,9 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Nonnull
     @Override
-    public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
-        ItemStack remainder = slot.insertItem(stack, action);
-        if (action.execute() && stack.getCount() != remainder.getCount()) {
+    public ItemStack insertItem(@Nonnull ItemStack stack) {
+        ItemStack remainder = slot.insertItem(stack);
+        if (stack.getCount() != remainder.getCount()) {
             setChanged();
         }
         return remainder;
@@ -51,10 +51,10 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         }
         if (slot.isEmpty()) {
             //If the slot is currently empty, just try simulating the insertion
-            return insertItem(stack, Action.SIMULATE).getCount() < stack.getCount();
+            return insertItem(stack).getCount() < stack.getCount();
         }
         //Otherwise we need to check if we can extract the current item
-        if (slot.extractItem(1, Action.SIMULATE).isEmpty()) {
+        if (slot.extractItem(1).isEmpty()) {
             //If we can't, fail
             return false;
         }
@@ -110,13 +110,13 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public boolean mayPickup(@Nonnull PlayerEntity player) {
-        return !slot.extractItem(1, Action.SIMULATE).isEmpty();
+        return !slot.extractItem(1).isEmpty();
     }
 
     @Nonnull
     @Override
     public ItemStack remove(int amount) {
-        return slot.extractItem(amount, Action.EXECUTE);
+        return slot.extractItem(amount);
     }
 
     //TODO: Forge has a TODO for implementing isSameInventory.

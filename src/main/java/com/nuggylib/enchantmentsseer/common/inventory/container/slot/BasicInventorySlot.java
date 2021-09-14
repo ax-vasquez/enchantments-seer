@@ -94,7 +94,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public ItemStack insertItem(ItemStack stack, Action action) {
+    public ItemStack insertItem(ItemStack stack) {
         if (stack.isEmpty() || !isItemValid(stack)) {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
@@ -104,21 +104,8 @@ public class BasicInventorySlot implements IInventorySlot {
             //Fail if we are a full slot
             return stack;
         }
-        boolean sameType = false;
-        if (isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
+        if (isEmpty()) {
             int toAdd = Math.min(stack.getCount(), needed);
-            if (action.execute()) {
-                //If we want to actually insert the item, then update the current item
-                if (sameType) {
-                    //We can just grow our stack by the amount we want to increase it
-                    current.grow(toAdd);
-                } else {
-                    //If we are not the same type then we have to copy the stack and set it
-                    // Just set it unchecked as we have already validated it
-                    // Note: this also will mark that the contents changed
-                    setStackUnchecked(StackUtils.size(stack, toAdd));
-                }
-            }
             return StackUtils.size(stack, stack.getCount() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
@@ -126,7 +113,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public ItemStack extractItem(int amount, Action action) {
+    public ItemStack extractItem(int amount) {
         if (isEmpty() || amount < 1) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return ItemStack.EMPTY;
@@ -141,10 +128,8 @@ public class BasicInventorySlot implements IInventorySlot {
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // especially for supporting the fact of limiting by the max stack size.
         ItemStack toReturn = StackUtils.size(current, amount);
-        if (action.execute()) {
-            //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
-            current.shrink(amount);
-        }
+        // TODO: See if we can remove this - this was formerly-done after checking the action, but we don't use that
+        current.shrink(amount);
         return toReturn;
     }
 
@@ -199,20 +184,17 @@ public class BasicInventorySlot implements IInventorySlot {
      * directly modify our stack instead of having to make a copy.
      */
     @Override
-    public int setStackSize(int amount, Action action) {
+    public int setStackSize(int amount) {
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
             return 0;
         }
         int maxStackSize = getLimit(current);
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (getCount() == amount || action.simulate()) {
+        if (getCount() == amount) {
             //If our size is not changing or we are only simulating the change, don't do anything
             return amount;
         }
@@ -226,13 +208,13 @@ public class BasicInventorySlot implements IInventorySlot {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public int growStack(int amount, Action action) {
+    public int growStack(int amount) {
         int current = getCount();
         if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(amount, getLimit(this.current));
         }
-        int newSize = setStackSize(current + amount, action);
+        int newSize = setStackSize(current + amount);
         return newSize - current;
     }
 

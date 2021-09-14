@@ -112,9 +112,6 @@ public class EnchantmentsSeerContainer extends Container {
     protected void addSlots() {
     }
 
-    protected void openInventory(@Nonnull PlayerInventory inv) {
-    }
-
     /**
      * Helper method to create the Container slots for the "main inventory" (the items that the player has in their
      * inventory) and the hot bar slots.
@@ -156,7 +153,6 @@ public class EnchantmentsSeerContainer extends Container {
     protected void addSlotsAndOpen() {
         addSlots();
         addInventorySlots(inv);
-        openInventory(inv);
     }
 
 }

@@ -12,7 +12,7 @@ public interface IInsertableSlot {
     //TODO: Improve these java docs at some point
 
     @Nonnull
-    ItemStack insertItem(@Nonnull ItemStack stack, Action action);
+    ItemStack insertItem(@Nonnull ItemStack stack);
 
     /**
      * Used for determining if this slot can merge with the given stack when the stack is double clicked.
