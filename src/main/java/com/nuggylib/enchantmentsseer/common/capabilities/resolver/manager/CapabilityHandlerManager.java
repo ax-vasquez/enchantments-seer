@@ -64,8 +64,8 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
     }
 
     @Override
-    public List<CONTAINER> getContainers(@Nullable Direction side) {
-        return canHandle() ? containerGetter.apply(holder, side) : Collections.emptyList();
+    public List<CONTAINER> getContainers() {
+        return canHandle() ? containerGetter.apply(holder, null) : Collections.emptyList();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
      * @apiNote Assumes that {@link #canHandle} has been called before this and that it was {@code true}.
      */
     @Override
-    public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> resolve(Capability<T> capability) {
         if (getContainers(side).isEmpty()) {
             //If we don't have any containers accessible from that side, don't return a handler
             //TODO: Evaluate moving this somehow into being done via the is disabled check
@@ -99,7 +99,7 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
     }
 
     @Override
-    public void invalidate(Capability<?> capability, @Nullable Direction side) {
+    public void invalidate(Capability<?> capability) {
         if (side == null) {
             invalidateReadOnly();
         } else {
