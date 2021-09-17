@@ -1,5 +1,7 @@
 package com.nuggylib.enchantmentsseer.common.tile.base;
 
+import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.IInventorySlotHolder;
+import com.nuggylib.enchantmentsseer.common.capabilities.resolver.manager.ItemHandlerManager;
 import com.nuggylib.enchantmentsseer.common.inventory.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -24,13 +26,17 @@ import java.util.Objects;
  *     <li>General inventory logic (e.g., getting/setting {@link ItemStack}s)</li>
  * </ol>
  */
-public class EnchantmentsSeerTileEntity extends TileEntity implements ITickableTileEntity, IItemHandler {
+public abstract class EnchantmentsSeerTileEntity extends TileEntity implements ITickableTileEntity, IItemHandler {
 
     protected final List<IInventorySlot> inventory;
+
+    //Variables for handling ITileContainer
+    protected final ItemHandlerManager itemHandlerManager;
 
     public EnchantmentsSeerTileEntity(TileEntityType<?> type) {
         super(type);
         inventory = new ArrayList<>();
+        itemHandlerManager = new ItemHandlerManager(getInitialInventory(), this);
     }
 
     @Override
@@ -148,6 +154,11 @@ public class EnchantmentsSeerTileEntity extends TileEntity implements ITickableT
     protected IInventorySlot getInventorySlot(int slot) {
         List<IInventorySlot> slots = getInventorySlots();
         return slot >= 0 && slot < slots.size() ? slots.get(slot) : null;
+    }
+
+    @Nullable
+    protected IInventorySlotHolder getInitialInventory() {
+        return null;
     }
 
     List<IInventorySlot> getInventorySlots() {

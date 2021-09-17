@@ -1,6 +1,7 @@
 package com.nuggylib.enchantmentsseer.common.capabilities.resolver.manager;
 
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.IHolder;
+import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.IInventorySlotHolder;
 import com.nuggylib.enchantmentsseer.common.util.annotations.FieldsAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Direction;
@@ -10,9 +11,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
@@ -21,40 +20,54 @@ import java.util.function.BiFunction;
  * This is a general-purpose capability handler manager class. Mekanism designed it to be used for a variety of different
  * "holders", but for our mod, we only ever use it with an inventory holder of some kind.
  *
+ * Our version is significantly simplified by removing any reference to sided logic, which also removes the need for
+ * using {@link LazyOptional}s. Not that there is a problem using those; we simply don't need them since Mekanism only
+ * used them for side-related logic, which we don't need. It is entirely possible that we could leverage {@link LazyOptional}s
+ * in a different manner to gain some benefit, but we're following the "make it work > make it right" mentality for the first
+ * releases.
+ *
  * @see "https://mcforge.readthedocs.io/en/latest/datastorage/capabilities/"
  */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER, SIDED_HANDLER extends HANDLER> implements ICapabilityHandlerManager<CONTAINER> {
+public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER> implements ICapabilityHandlerManager<CONTAINER> {
 
-    private final ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator;
+    // TODO: Update this so we no longer need to use a BiFunction - that's a remnant from Mekanism code, but it works for now
     private final BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter;
-    private final Map<Direction, LazyOptional<HANDLER>> handlers;
+
     private final List<Capability<?>> supportedCapability;
-    private final SIDED_HANDLER baseHandler;
+    /**
+     * The underlying handler (e.g., item handler, fluid handler, energy handler)
+     *
+     * In Mekanism's code, they use this base handler to construct more handlers using their "side" logic (using the
+     * {@link Direction} class). Since we have no need for side logic, we simply use this base handler as the "main"
+     * handler for the given {@link CapabilityHandlerManager} instance.
+     */
+    private final HANDLER baseHandler;
+    // TODO: We can probably remove this since it will always be true in our case (`holder` will always be defined in
+    //  our mod since we only have one block and it stores items, so it will always have a corresponding `holder`)
     private final boolean canHandle;
-    @Nullable
-    private LazyOptional<HANDLER> readOnlyHandler;
+    /**
+     * The "holder" for the corresponding type that this {@link CapabilityHandlerManager} "holds"
+     *
+     * In our case, this will only ever be an {@link IInventorySlotHolder} since we only have one block that needs to
+     * use this class, and it's one that stores items.
+     */
     @Nullable
     protected final HOLDER holder;
 
-    protected CapabilityHandlerManager(@Nullable HOLDER holder, SIDED_HANDLER baseHandler, Capability<HANDLER> supportedCapability,
-                                       ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator, BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter) {
+    // TODO: See what impact removing the proxy-related logic has
+    protected CapabilityHandlerManager(@Nullable HOLDER holder, HANDLER baseHandler, Capability<HANDLER> supportedCapability,
+                                       BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter) {
         this.supportedCapability = Collections.singletonList(supportedCapability);
         this.holder = holder;
         this.canHandle = this.holder != null;
         this.baseHandler = baseHandler;
-        this.proxyCreator = proxyCreator;
         this.containerGetter = containerGetter;
-        if (this.canHandle) {
-            handlers = new EnumMap<>(Direction.class);
-        } else {
-            handlers = Collections.emptyMap();
-        }
     }
 
-    public SIDED_HANDLER getInternal() {
+    public HANDLER getInternal() {
         return baseHandler;
     }
 
@@ -68,67 +81,4 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
         return canHandle() ? containerGetter.apply(holder, null) : Collections.emptyList();
     }
 
-    @Override
-    public List<Capability<?>> getSupportedCapabilities() {
-        return supportedCapability;
-    }
-
-    /**
-     * Lazily get and cache a handler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
-     *
-     * @apiNote Assumes that {@link #canHandle} has been called before this and that it was {@code true}.
-     */
-    @Override
-    public <T> LazyOptional<T> resolve(Capability<T> capability) {
-        if (getContainers(side).isEmpty()) {
-            //If we don't have any containers accessible from that side, don't return a handler
-            //TODO: Evaluate moving this somehow into being done via the is disabled check
-            return LazyOptional.empty();
-        }
-        if (side == null) {
-            if (readOnlyHandler == null || !readOnlyHandler.isPresent()) {
-                readOnlyHandler = LazyOptional.of(() -> proxyCreator.create(baseHandler, null, holder));
-            }
-            return readOnlyHandler.cast();
-        }
-        LazyOptional<HANDLER> cachedCapability = handlers.get(side);
-        if (cachedCapability == null || !cachedCapability.isPresent()) {
-            handlers.put(side, cachedCapability = LazyOptional.of(() -> proxyCreator.create(baseHandler, side, holder)));
-        }
-        return cachedCapability.cast();
-    }
-
-    @Override
-    public void invalidate(Capability<?> capability) {
-        if (side == null) {
-            invalidateReadOnly();
-        } else {
-            invalidate(handlers.get(side));
-        }
-    }
-
-    @Override
-    public void invalidateAll() {
-        invalidateReadOnly();
-        handlers.values().forEach(this::invalidate);
-    }
-
-    private void invalidateReadOnly() {
-        if (readOnlyHandler != null && readOnlyHandler.isPresent()) {
-            readOnlyHandler.invalidate();
-            readOnlyHandler = null;
-        }
-    }
-
-    protected void invalidate(@Nullable LazyOptional<?> cachedCapability) {
-        if (cachedCapability != null && cachedCapability.isPresent()) {
-            cachedCapability.invalidate();
-        }
-    }
-
-    @FunctionalInterface
-    public interface ProxyCreator<HANDLER, SIDED_HANDLER extends HANDLER> {
-
-        HANDLER create(SIDED_HANDLER handler, @Nullable Direction side, @Nullable IHolder holder);
-    }
 }

@@ -15,7 +15,7 @@ import java.util.List;
  * @param <CONTAINER>
  */
 @MethodsReturnNonnullByDefault
-public interface ICapabilityHandlerManager<CONTAINER> extends ICapabilityResolver {
+public interface ICapabilityHandlerManager<CONTAINER> {
 
     /**
      * Checks if the capability handler manager can handle this substance type.
