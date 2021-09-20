@@ -3,10 +3,12 @@ package com.nuggylib.enchantmentsseer.common.tile.base;
 import com.nuggylib.enchantmentsseer.common.capabilities.holder.slot.IInventorySlotHolder;
 import com.nuggylib.enchantmentsseer.common.capabilities.resolver.manager.ItemHandlerManager;
 import com.nuggylib.enchantmentsseer.common.inventory.IInventorySlot;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +31,13 @@ import java.util.Objects;
 public abstract class EnchantmentsSeerTileEntity extends TileEntity implements ITickableTileEntity, IItemHandler {
 
     protected final List<IInventorySlot> inventory;
+    /**
+     * Determines if the given Tile Entity instance has a GUI.
+     *
+     * In the <pre>enchantments-seer</pre> mod, this will always be true. However, this class should be easily-adaptable
+     * to a wide variety of use cases for Tile Entities.
+     */
+    private boolean hasGui;
 
     //Variables for handling ITileContainer
     protected final ItemHandlerManager itemHandlerManager;
@@ -37,6 +46,8 @@ public abstract class EnchantmentsSeerTileEntity extends TileEntity implements I
         super(type);
         inventory = new ArrayList<>();
         itemHandlerManager = new ItemHandlerManager(getInitialInventory(), this);
+        // Set to false by default, but should be set to true in subclassed TileEntities that need a GUI
+        hasGui = false;
     }
 
     @Override
@@ -48,6 +59,15 @@ public abstract class EnchantmentsSeerTileEntity extends TileEntity implements I
         }
     }
 
+    public final boolean hasInventory() {
+        return itemHandlerManager.canHandle();
+    }
+
+    @Nonnull
+    public final List<IInventorySlot> getInventorySlots() {
+        return itemHandlerManager.getContainers();
+    }
+
     /**
      * Gets the <b>count</b> of the total number of slots (not the actual contents of the slots)
      *
@@ -56,6 +76,10 @@ public abstract class EnchantmentsSeerTileEntity extends TileEntity implements I
     @Override
     public int getSlots() {
         return this.inventory.size();
+    }
+
+    public final boolean hasGui() {
+        return hasGui;
     }
 
     /**
@@ -161,7 +185,4 @@ public abstract class EnchantmentsSeerTileEntity extends TileEntity implements I
         return null;
     }
 
-    List<IInventorySlot> getInventorySlots() {
-        return this.inventory;
-    }
 }

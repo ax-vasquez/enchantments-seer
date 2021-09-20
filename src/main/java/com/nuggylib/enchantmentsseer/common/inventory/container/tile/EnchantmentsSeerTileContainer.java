@@ -2,7 +2,9 @@ package com.nuggylib.enchantmentsseer.common.inventory.container.tile;
 
 import com.nuggylib.enchantmentsseer.common.inventory.IInventorySlot;
 import com.nuggylib.enchantmentsseer.common.inventory.container.EnchantmentsSeerContainer;
+import com.nuggylib.enchantmentsseer.common.tile.base.EnchantmentsSeerTileEntity;
 import com.nuggylib.enchantmentsseer.common.util.WorldUtils;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,7 +31,7 @@ import java.util.List;
  * animated. Not every use case will need all the methods in this class, but this class provides all the methods that
  * any such block could need to do its job.
  */
-public class EnchantmentsSeerTileContainer<TILE extends TileEntity> extends EnchantmentsSeerContainer {
+public class EnchantmentsSeerTileContainer<TILE extends EnchantmentsSeerTileEntity> extends EnchantmentsSeerContainer {
 
     @Nonnull
     protected final TILE tile;
@@ -56,7 +58,7 @@ public class EnchantmentsSeerTileContainer<TILE extends TileEntity> extends Ench
         // TODO - Implement our own ItemHandlerManager that completely ignores the concept of Sides - we need to use it to get the inventory
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
-            List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);
+            List<IInventorySlot> inventorySlots = tile.getInventorySlots();
             for (IInventorySlot inventorySlot : inventorySlots) {
                 Slot containerSlot = inventorySlot.createContainerSlot();
                 if (containerSlot != null) {
